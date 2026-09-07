@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>kɔɪl</title>
-    <!-- PWA 配置（打包APP用） -->
+    <title>Koil</title>
+    <!-- PWA 配置 -->
     <link rel="manifest" href="manifest.json" />
-    <meta name="theme-color" content="#0a0a0f" />
+    <meta name="theme-color" content="#07070d" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* ===== 全局样式 ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background: #0a0a0f;
+            background: #07070d;
             color: #b0f0ff;
             font-family: 'Courier New', monospace;
             min-height: 100vh;
@@ -202,39 +202,219 @@
         }
         .toggle.active::after { left: 22px; }
 
-        /* ===== 启动闪屏 ===== */
+        /* ===== Koil 启动闪屏专属样式 ===== */
         #splashScreen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #0a0a0f;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #07070d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             z-index: 9999;
-            transition: opacity 0.8s ease;
+            transition: opacity 1.2s ease;
+            overflow: hidden;
         }
-        #splashScreen.hide { opacity: 0; pointer-events: none; }
-        #splashScreen .logo {
-            font-size: 64px; color: #00ffff;
-            text-shadow: 0 0 60px rgba(0,255,255,0.5);
-            animation: pulseLogo 1.5s ease-in-out infinite alternate;
+        #splashScreen.hide {
+            opacity: 0;
+            pointer-events: none;
         }
-        @keyframes pulseLogo {
-            0% { transform: scale(1); text-shadow: 0 0 40px rgba(0,255,255,0.3); }
-            100% { transform: scale(1.05); text-shadow: 0 0 80px rgba(0,255,255,0.8), 0 0 120px rgba(150,0,255,0.3); }
+
+        /* 背景网格 */
+        .splash-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.3;
         }
-        #splashScreen .sub {
-            font-size: 14px; opacity: 0.4; margin-top: 12px;
+
+        .splash-content {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 32px;
+            padding: 20px;
+            opacity: 0;
+            animation: contentFadeIn 1s ease 0.3s forwards;
+        }
+        @keyframes contentFadeIn {
+            to { opacity: 1; }
+        }
+
+        /* ---- 品牌标识 ---- */
+        .brand-wrapper {
+            text-align: center;
+            position: relative;
+        }
+        .brand-text {
+            font-size: clamp(72px, 18vw, 140px);
+            font-weight: 900;
+            font-family: 'Arial Black', 'Impact', sans-serif;
+            letter-spacing: 6px;
+            color: #00f0ff;
+            text-shadow: 
+                0 0 10px rgba(0, 240, 255, 0.4),
+                0 0 30px rgba(0, 240, 255, 0.2),
+                0 0 60px rgba(150, 0, 255, 0.3);
+            animation: textGlitch 2.5s infinite, textFlow 3s infinite alternate;
+            position: relative;
+            display: inline-block;
+        }
+
+        /* 故障抖动 */
+        @keyframes textGlitch {
+            0%, 90%, 100% { transform: translate(0); opacity: 1; }
+            92% { transform: translate(-2px, 1px) skewX(0.5deg); }
+            94% { transform: translate(2px, -1px) skewX(-0.5deg); }
+            96% { transform: translate(-1px, 1px); }
+            98% { transform: translate(1px, -1px); }
+        }
+
+        /* 流光扫过 */
+        @keyframes textFlow {
+            0% { text-shadow: 0 0 10px rgba(0, 240, 255, 0.4), 0 0 30px rgba(0, 240, 255, 0.2), 0 0 60px rgba(150, 0, 255, 0.3); }
+            50% { text-shadow: 0 0 20px rgba(0, 240, 255, 0.8), 0 0 60px rgba(0, 240, 255, 0.5), 0 0 100px rgba(150, 0, 255, 0.6); }
+            100% { text-shadow: 0 0 10px rgba(0, 240, 255, 0.4), 0 0 30px rgba(0, 240, 255, 0.2), 0 0 60px rgba(150, 0, 255, 0.3); }
+        }
+
+        /* 品牌下方读音 */
+        .brand-phonetic {
+            font-size: 20px;
+            color: rgba(180, 180, 255, 0.6);
             letter-spacing: 8px;
+            margin-top: -8px;
+            font-family: 'Courier New', monospace;
         }
-        #splashScreen .loading-bar {
-            width: 200px; height: 3px; background: rgba(0,255,255,0.1);
-            border-radius: 10px; margin-top: 30px; overflow: hidden;
+
+        /* ---- 电池充能 ---- */
+        .battery-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            width: 280px;
+            max-width: 80vw;
         }
-        #splashScreen .loading-bar .fill {
-            height: 100%; width: 0%; background: linear-gradient(90deg, #00ffff, #ff00ff);
-            border-radius: 10px; animation: loadFill 2s ease-in-out forwards;
+        .battery-frame {
+            position: relative;
+            width: 100%;
+            height: 28px;
+            background: rgba(0, 20, 30, 0.6);
+            border: 2px solid #00f0ff;
+            border-radius: 30px;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2), inset 0 0 20px rgba(0, 240, 255, 0.05);
+            overflow: hidden;
+            padding: 2px;
         }
-        @keyframes loadFill {
-            0% { width: 0%; }
-            100% { width: 100%; }
+        /* 电池头 */
+        .battery-frame::after {
+            content: '';
+            position: absolute;
+            right: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 10px;
+            height: 14px;
+            background: #00f0ff;
+            border-radius: 0 6px 6px 0;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
+        }
+
+        .battery-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #00aaff, #aa66ff);
+            border-radius: 30px;
+            position: relative;
+            transition: width 0.15s linear;
+            box-shadow: inset 0 0 20px rgba(0, 200, 255, 0.3);
+            overflow: hidden;
+        }
+        /* 电池内部流光粒子 */
+        .battery-fluid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent 0px,
+                rgba(255, 255, 255, 0.15) 2px,
+                transparent 6px,
+                rgba(0, 255, 255, 0.1) 8px,
+                transparent 12px
+            );
+            animation: fluidFlow 1.2s linear infinite;
+        }
+        @keyframes fluidFlow {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* 电池内部二进制代码雨 */
+        .battery-code-rain {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: rgba(0, 255, 200, 0.15);
+            overflow: hidden;
+            pointer-events: none;
+            white-space: nowrap;
+            line-height: 28px;
+            letter-spacing: 4px;
+        }
+
+        .battery-label {
+            font-size: 14px;
+            color: rgba(180, 200, 255, 0.7);
+            letter-spacing: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        .battery-percent {
+            font-size: 22px;
+            font-weight: bold;
+            color: #00f0ff;
+            text-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+            font-family: 'Courier New', monospace;
+        }
+
+        /* ---- 能量爆发粒子 ---- */
+        #energyBurstContainer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+            overflow: hidden;
+        }
+        .burst-particle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, #00f0ff, #aa66ff);
+            box-shadow: 0 0 20px #00f0ff;
+            animation: burstFly 1s ease-out forwards;
+        }
+        @keyframes burstFly {
+            0% { transform: translate(0, 0) scale(0.8); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
         }
 
         /* ===== 用户协议弹窗 ===== */
@@ -329,15 +509,33 @@
 </head>
 <body>
 
-    <!-- ===== 启动闪屏 ===== -->
+    <!-- ===== Koil 启动闪屏 ===== -->
     <div id="splashScreen">
-        <div class="logo">⚡</div>
-        <div style="font-size:28px; font-weight:bold; color:#00ffff; text-shadow:0 0 40px rgba(0,255,255,0.3); margin-top:8px;">
-            kɔɪl
+        <!-- 背景网格 -->
+        <div class="splash-grid"></div>
+
+        <div class="splash-content">
+            <!-- 品牌标识 -->
+            <div class="brand-wrapper">
+                <div class="brand-text" id="brandText">Koil</div>
+                <div class="brand-phonetic">kɔɪl</div>
+            </div>
+
+            <!-- 电池充能 -->
+            <div class="battery-wrapper">
+                <div class="battery-frame">
+                    <div class="battery-fill" id="batteryFill">
+                        <div class="battery-fluid"></div>
+                    </div>
+                    <div class="battery-code-rain" id="batteryCodeRain"></div>
+                </div>
+                <div class="battery-label">【 能量充能 · 系统启动 】</div>
+                <div class="battery-percent" id="batteryPercent">0%</div>
+            </div>
         </div>
-        <div class="sub">ENERGY · CODE · FUTURE</div>
-        <div class="loading-bar"><div class="fill"></div></div>
-        <div style="font-size:12px; opacity:0.2; margin-top:12px;">加载系统中 ...</div>
+
+        <!-- 能量爆发粒子容器 -->
+        <div id="energyBurstContainer"></div>
     </div>
 
     <!-- ===== 用户协议弹窗 ===== -->
@@ -345,7 +543,7 @@
         <div class="agreement-box">
             <h2>⚡ 用户协议 & 隐私政策</h2>
             <div class="content">
-                <p><strong>欢迎使用「kɔɪl」</strong></p>
+                <p><strong>欢迎使用「Koil」</strong></p>
                 <p style="margin-top:8px;">1. 本应用为赛博风格能量管理工具，所有数据存储在您的浏览器本地，不会上传至任何服务器。</p>
                 <p style="margin-top:8px;">2. 您需要注册手机号以保存能量数据，手机号仅用作本地标识，不会泄露。</p>
                 <p style="margin-top:8px;">3. 游客模式数据不会保存，切换设备或清除浏览器缓存将丢失数据。</p>
@@ -391,12 +589,12 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- 登录页（内嵌） -->
+    <!-- 登录页 -->
     <!-- ============================================================ -->
     <div class="page" id="pageLogin">
         <div class="cyber-card">
             <h1 class="text-3xl font-bold text-center mb-2" style="color:#00ffff; text-shadow:0 0 30px #00ffff80;">
-                ⚡ kɔɪl
+                ⚡ Koil
             </h1>
             <p class="text-center text-sm opacity-60 mb-6">〜 能量即代码 〜</p>
             <div style="display:flex; gap:8px; margin-bottom:20px; border-bottom:1px solid rgba(0,255,255,0.2); padding-bottom:12px;">
@@ -559,7 +757,7 @@
     <!-- ============================================================ -->
     <script>
         // ================================================================
-        //  📦 最终版 JavaScript —— 全部功能 + 闪屏 + 协议
+        //  📦 Koil 完整 JavaScript —— 闪屏 + 全部功能
         // ================================================================
 
         // ---------- 工具函数 ----------
@@ -633,26 +831,90 @@
         }
 
         // ================================================================
-        //  闪屏 & 协议
+        //  Koil 启动闪屏控制
         // ================================================================
+        let splashTimer = null;
+
         function showSplash() {
             const splash = document.getElementById('splashScreen');
+            const batteryFill = document.getElementById('batteryFill');
+            const batteryPercent = document.getElementById('batteryPercent');
+            const batteryCodeRain = document.getElementById('batteryCodeRain');
+            
+            // 生成电池内部二进制代码雨
+            function generateCodeRain() {
+                let codeStr = '';
+                for (let i = 0; i < 40; i++) {
+                    codeStr += Math.random() > 0.5 ? '1' : '0';
+                }
+                batteryCodeRain.textContent = codeStr;
+                setTimeout(generateCodeRain, 300);
+            }
+            generateCodeRain();
+
             // 检查是否已同意协议
             const agreed = localStorage.getItem('cyber_agreed');
-            // 2.5秒后隐藏闪屏
-            setTimeout(() => {
-                splash.classList.add('hide');
-                setTimeout(() => {
-                    splash.style.display = 'none';
-                    // 显示协议（如果未同意）
-                    if (!agreed) {
-                        document.getElementById('agreementOverlay').classList.add('show');
-                    } else {
-                        // 已同意，直接进入登录
-                        showLoginPage();
-                    }
-                }, 800);
-            }, 2500);
+            let charge = 0;
+            const chargeStep = 0.6 + Math.random() * 0.5;
+            const chargeInterval = 50;
+
+            // 清除旧定时器
+            if (splashTimer) clearInterval(splashTimer);
+
+            // 启动充能
+            splashTimer = setInterval(() => {
+                charge = Math.min(charge + chargeStep, 100);
+                batteryFill.style.width = charge + '%';
+                batteryPercent.textContent = Math.floor(charge) + '%';
+
+                // 充能至 100% 时触发爆发
+                if (charge >= 100) {
+                    clearInterval(splashTimer);
+                    splashTimer = null;
+                    triggerEnergyBurst();
+                    
+                    // 延迟跳转
+                    setTimeout(() => {
+                        splash.classList.add('hide');
+                        setTimeout(() => {
+                            splash.style.display = 'none';
+                            if (!agreed) {
+                                document.getElementById('agreementOverlay').classList.add('show');
+                            } else {
+                                showLoginPage();
+                            }
+                        }, 800);
+                    }, 600);
+                }
+            }, chargeInterval);
+        }
+
+        // 能量爆发粒子特效
+        function triggerEnergyBurst() {
+            const container = document.getElementById('energyBurstContainer');
+            const colors = ['#00f0ff', '#aa66ff', '#ff44aa', '#00ffaa'];
+            for (let i = 0; i < 60; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'burst-particle';
+                const size = 4 + Math.random() * 12;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.boxShadow = `0 0 ${size}px ${particle.style.background}`;
+                
+                const angle = Math.random() * Math.PI * 2;
+                const dist = 80 + Math.random() * 400;
+                const tx = Math.cos(angle) * dist;
+                const ty = Math.sin(angle) * dist;
+                particle.style.setProperty('--tx', tx + 'px');
+                particle.style.setProperty('--ty', ty + 'px');
+                particle.style.left = '50%';
+                particle.style.top = '50%';
+                particle.style.transform = 'translate(-50%, -50%)';
+                particle.style.animationDuration = (0.6 + Math.random() * 0.6) + 's';
+                container.appendChild(particle);
+                setTimeout(() => particle.remove(), 1500);
+            }
         }
 
         // ---------- 协议 ----------
@@ -664,32 +926,27 @@
 
         document.getElementById('agreeDisagree').addEventListener('click', function() {
             alert('您需要同意用户协议才能使用本应用。');
-            // 不让关闭
         });
 
         // ---------- 显示登录页 ----------
         function showLoginPage() {
             const phone = getCurrentUser();
             if (phone && phone.startsWith('guest_')) {
-                // 游客直接进首页
                 showPage('pageHome');
                 updateHomePage();
                 return;
             }
             if (phone) {
-                // 已登录用户直接进首页
                 showPage('pageHome');
                 updateHomePage();
                 return;
             }
-            // 未登录显示登录页
             showPage('pageLogin');
-            // 默认显示登录Tab
             document.getElementById('tabLogin').click();
         }
 
         // ================================================================
-        //  登录注册（阶段1逻辑）
+        //  登录注册
         // ================================================================
         function setupAuth() {
             const tabLogin = document.getElementById('tabLogin');
@@ -721,7 +978,6 @@
                 document.getElementById('regMsg').textContent = '';
             });
 
-            // 注册
             document.getElementById('registerBtn').addEventListener('click', function() {
                 const phone = document.getElementById('regPhone').value.trim();
                 const pwd = document.getElementById('regPassword').value.trim();
@@ -742,7 +998,6 @@
                 tabLogin.click();
             });
 
-            // 登录
             document.getElementById('loginBtn').addEventListener('click', function() {
                 const phone = document.getElementById('loginPhone').value.trim();
                 const pwd = document.getElementById('loginPassword').value.trim();
@@ -762,7 +1017,6 @@
                 }, 600);
             });
 
-            // 忘记密码
             document.getElementById('forgotPwdLink').addEventListener('click', function() {
                 const phone = prompt('📱 输入手机号，密码将重置为 123456');
                 if (!phone) return;
@@ -773,7 +1027,6 @@
                 alert('✅ 密码已重置为 123456');
             });
 
-            // 游客
             document.getElementById('guestEnter').addEventListener('click', function() {
                 setCurrentUser('guest_' + Date.now());
                 alert('🧊 游客模式，数据不会保存');
@@ -781,7 +1034,6 @@
                 updateHomePage();
             });
 
-            // 回车登录
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter' && document.getElementById('pageLogin').classList.contains('active')) {
                     if (loginForm.style.display !== 'none') document.getElementById('loginBtn').click();
@@ -924,7 +1176,6 @@
             } else if (mode === 'fast') {
                 burnStatus.textContent = '💥 极速爆燃 !!!';
                 const total = userData.energy || 0;
-                // 全屏闪白
                 const flash = document.createElement('div');
                 flash.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at center,rgba(255,255,255,0.9),rgba(255,0,255,0.6),transparent);z-index:50;pointer-events:none;animation:flashOut 0.6s forwards;';
                 document.body.appendChild(flash);
@@ -1112,10 +1363,11 @@
         //  初始化
         // ================================================================
         function initApp() {
-            // 先显示闪屏
+            // 显示闪屏
             showSplash();
 
-            // 等闪屏结束后再绑定事件
+            // 等闪屏结束后再绑定事件（实际上闪屏结束后会调用 showLoginPage）
+            // 但我们需要提前绑定好所有按钮，等闪屏结束后页面才能交互
             setTimeout(() => {
                 // 首页按钮
                 document.getElementById('goToCode').addEventListener('click', () => {
@@ -1220,9 +1472,9 @@
                 // 登录注册
                 setupAuth();
 
-                console.log('✅ kɔɪl 加载完成！');
+                console.log('✅ Koil 加载完成！');
                 console.log('💡 所有功能已就绪，享受你的赛博之旅！');
-            }, 3000);
+            }, 100);
         }
 
         document.addEventListener('DOMContentLoaded', initApp);
