@@ -1,6 +1,6 @@
 {
-  "name": "赛博能量燃境",
-  "short_name": "赛博燃境",
+  "name": "赛博能量燃烧",
+  "short_name": "赛博燃烧",
   "description": "赛博能量燃烧可视化工具",
   "start_url": "index.html",
   "display": "standalone",
