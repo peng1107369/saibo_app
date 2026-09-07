@@ -31,7 +31,7 @@
             background-size: 30px 30px;
         }
 
-        /* ===== 启动闪屏（保留，但时序已改） ===== */
+        /* ===== 启动闪屏（保留，时序已改） ===== */
         #splashScreen {
             position: fixed;
             top: 0;
@@ -248,7 +248,6 @@
         /* ===== 主页面容器 ===== */
         #appContainer {
             display: none;
-            /* 闪屏结束后显示 */
             flex-direction: column;
             height: 100vh;
             max-height: 100vh;
@@ -257,7 +256,6 @@
             margin: 0 auto;
             position: relative;
             padding-bottom: 70px;
-            /* 给底部导航留空间 */;
         }
         #appContainer.active {
             display: flex;
@@ -277,7 +275,9 @@
             display: flex;
         }
 
-        /* ===== 首页：球体 + 输入框 ===== */
+        /* ================================================================
+           首页：全新球体特效（深色半透明 + 内部枝状闪电旋转流动）
+           ================================================================ */
         #pageHome .sphere-wrapper {
             display: flex;
             flex-direction: column;
@@ -287,79 +287,50 @@
             margin-top: -20px;
         }
 
-        /* ---- 球体组件 ---- */
+        /* ---- 球体容器 ---- */
         .globe-container {
             width: 260px;
             height: 260px;
             position: relative;
-            perspective: 600px;
+            /* 球体整体呼吸缩放 */
+            animation: globeBreath 3s ease-in-out infinite alternate;
+            /* 球体本身缓慢自转（整体旋转） */
+            animation: globeBreath 3s ease-in-out infinite alternate, globeSpin 20s linear infinite;
         }
+        /* 呼吸缩放 */
+        @keyframes globeBreath {
+            0% {
+                transform: scale(0.97);
+            }
+            100% {
+                transform: scale(1.03);
+            }
+        }
+        /* 整体自转（绕Y轴） */
+        @keyframes globeSpin {
+            0% {
+                transform: rotateY(0deg) scale(1);
+            }
+            100% {
+                transform: rotateY(360deg) scale(1);
+            }
+        }
+
+        /* ---- 球体自身（深色半透明外壳 + 网格） ---- */
         .globe {
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, rgba(0, 200, 255, 0.15), rgba(10, 10, 30, 0.6));
-            backdrop-filter: blur(6px);
+            background: radial-gradient(circle at 30% 30%, rgba(0, 200, 255, 0.08), rgba(10, 10, 30, 0.5));
+            backdrop-filter: blur(4px);
             border: 1px solid rgba(0, 255, 255, 0.25);
-            box-shadow: 0 0 60px rgba(0, 255, 255, 0.15), inset 0 0 60px rgba(0, 255, 255, 0.05);
+            box-shadow: 0 0 60px rgba(0, 255, 255, 0.1), inset 0 0 60px rgba(0, 255, 255, 0.05);
             position: relative;
-            animation: globeBreath 3s ease-in-out infinite alternate, globeSpin 20s linear infinite;
+            overflow: hidden;
             transform-style: preserve-3d;
-            overflow: hidden;
-        }
-        /* 球体呼吸 */
-        @keyframes globeBreath {
-            0% {
-                transform: scale(0.98);
-                box-shadow: 0 0 40px rgba(0, 255, 255, 0.1), inset 0 0 40px rgba(0, 255, 255, 0.02);
-            }
-            100% {
-                transform: scale(1.02);
-                box-shadow: 0 0 80px rgba(0, 255, 255, 0.25), inset 0 0 80px rgba(0, 255, 255, 0.08);
-            }
-        }
-        /* 球体自转 */
-        @keyframes globeSpin {
-            0% {
-                background-position: 0% 50%;
-            }
-            100% {
-                background-position: 200% 50%;
-            }
         }
 
-        /* 球体内部的闪电特效（用SVG或canvas绘制，这里用纯CSS模拟立体闪电） */
-        .lightning-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            overflow: hidden;
-            pointer-events: none;
-        }
-        .lightning {
-            position: absolute;
-            width: 2px;
-            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgba(100, 200, 255, 0.3));
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5), 0 0 40px rgba(100, 200, 255, 0.2);
-            animation: lightningFlash 0.5s ease-in-out infinite alternate;
-            transform-origin: bottom center;
-        }
-        @keyframes lightningFlash {
-            0% {
-                opacity: 0.3;
-                transform: scaleY(0.8);
-            }
-            100% {
-                opacity: 1;
-                transform: scaleY(1.2);
-            }
-        }
-
-        /* 球体上叠加的网格线（赛博风） */
+        /* 球体表面的网格线（赛博风，随球体旋转） */
         .globe-grid {
             position: absolute;
             top: 0;
@@ -370,7 +341,9 @@
             background:
                 repeating-linear-gradient(0deg, rgba(0, 255, 255, 0.06) 0px, rgba(0, 255, 255, 0.06) 1px, transparent 1px, transparent 12px),
                 repeating-linear-gradient(90deg, rgba(255, 0, 255, 0.04) 0px, rgba(255, 0, 255, 0.04) 1px, transparent 1px, transparent 12px);
+            /* 网格本身反向旋转，制造球体表面转动的效果 */
             animation: gridRotate 30s linear infinite;
+            pointer-events: none;
         }
         @keyframes gridRotate {
             0% {
@@ -381,15 +354,37 @@
             }
         }
 
-        /* 球体加速状态 */
-        .globe.speed-up {
-            animation: globeBreath 1.5s ease-in-out infinite alternate, globeSpin 4s linear infinite !important;
+        /* ---- 内部闪电 Canvas（专门绘制枝状闪电，并独立旋转） ---- */
+        #lightningCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            pointer-events: none;
+            /* 默认缓慢旋转（流动效果） */
+            animation: lightningFlow 12s linear infinite;
         }
-        .globe.speed-up .lightning {
-            animation-duration: 0.15s !important;
+        /* 闪电流动旋转 */
+        @keyframes lightningFlow {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
-        /* ---- 能量数字显示 ---- */
+        /* 加速状态（点击开始后启用） */
+        .globe-container.speed-up {
+            animation: globeBreath 1.5s ease-in-out infinite alternate, globeSpin 4s linear infinite !important;
+        }
+        .globe-container.speed-up #lightningCanvas {
+            animation: lightningFlow 2s linear infinite !important;
+        }
+
+        /* 能量数字显示 */
         .energy-display {
             font-size: 48px;
             font-weight: bold;
@@ -415,7 +410,7 @@
             }
         }
 
-        /* ---- 输入框 + 按钮 ---- */
+        /* 输入框 + 按钮 */
         .code-input-wrapper {
             display: flex;
             gap: 12px;
@@ -510,7 +505,6 @@
         .nav-item.active .nav-label {
             text-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
         }
-        /* 点击电光反馈 */
         .nav-item:active {
             transform: scale(0.9);
         }
@@ -616,9 +610,6 @@
             border-color: #00f0ff;
             box-shadow: 0 0 30px rgba(0, 240, 255, 0.1);
         }
-        .login-modal-box .form-actions {
-            margin-top: 16px;
-        }
         .login-modal-box .form-actions button {
             width: 100%;
             padding: 14px;
@@ -662,7 +653,7 @@
             color: #00f0ff;
         }
 
-        /* ===== 任务页面 ===== */
+        /* ===== 其他页面通用样式 ===== */
         .task-card {
             background: rgba(0, 20, 30, 0.4);
             border: 1px solid rgba(0, 255, 255, 0.1);
@@ -706,7 +697,6 @@
             cursor: not-allowed;
         }
 
-        /* ===== 日志页面 ===== */
         .log-list {
             width: 100%;
             max-width: 380px;
@@ -735,7 +725,6 @@
             font-size: 11px;
         }
 
-        /* ===== 个人中心 ===== */
         .profile-card {
             background: rgba(0, 20, 30, 0.3);
             border: 1px solid rgba(0, 255, 255, 0.08);
@@ -807,7 +796,6 @@
             border-color: #00f0ff;
         }
 
-        /* ===== 排行榜页面 ===== */
         .rank-list {
             width: 100%;
             max-width: 380px;
@@ -835,7 +823,6 @@
             font-weight: bold;
         }
 
-        /* ===== 页面标题 ===== */
         .page-title {
             font-size: 24px;
             font-weight: bold;
@@ -843,11 +830,6 @@
             text-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
             margin-bottom: 20px;
             letter-spacing: 4px;
-        }
-
-        /* ===== 工具类 ===== */
-        .text-glitch {
-            animation: textGlitch 2.5s infinite;
         }
 
         /* ===== 响应式 ===== */
@@ -906,17 +888,17 @@
     <div id="appContainer">
 
         <!-- ============================================================ -->
-        <!-- 首页：球体 + 输入框 -->
+        <!-- 首页：球体 + 输入框（核心修改部分） -->
         <!-- ============================================================ -->
         <div class="page-content active" id="pageHome">
             <div class="sphere-wrapper">
-                <!-- 球体 -->
-                <div class="globe-container">
+                <!-- 球体容器（包含呼吸、自转动画） -->
+                <div class="globe-container" id="globeContainer">
+                    <!-- 球体外壳（深色半透明 + 网格） -->
                     <div class="globe" id="mainGlobe">
                         <div class="globe-grid"></div>
-                        <div class="lightning-container" id="lightningContainer">
-                            <!-- 闪电由JS动态生成 -->
-                        </div>
+                        <!-- 闪电 Canvas（绘制枝状闪电，独立旋转） -->
+                        <canvas id="lightningCanvas" width="260" height="260"></canvas>
                     </div>
                 </div>
 
@@ -982,7 +964,6 @@
                 <div style="font-size:18px;font-weight:bold;" id="profileName">赛博觉醒者</div>
                 <div style="opacity:0.4;font-size:13px;" id="profilePhone">未登录</div>
                 <div style="margin-top:6px;"><span class="badge-item" id="profileLevel">🌱 Lv.1</span></div>
-
                 <div class="profile-stats">
                     <div class="stat-item">
                         <div class="stat-num" id="profileEnergy">0</div>
@@ -997,12 +978,10 @@
                         <div class="stat-label">累计燃烧</div>
                     </div>
                 </div>
-
                 <div class="badge-list" id="badgeList">
                     <span class="badge-item">🌱 觉醒者</span>
                 </div>
             </div>
-
             <!-- 设置区域（内置登录/注册入口） -->
             <div class="profile-card" style="border-color:rgba(0,255,255,0.15);">
                 <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
@@ -1077,7 +1056,7 @@
     <script>
         // ================================================================
         //  📦 Koil · 铸钥  —— 完整 JavaScript
-        //  全部功能：闪屏、球体、导航、登录弹窗、能量逻辑
+        //  包含：闪屏、球体闪电绘制、能量逻辑、导航、登录弹窗
         // ================================================================
 
         // ---------- 工具函数 ----------
@@ -1126,11 +1105,11 @@
             'cyber2026': 50,
             'neon666': 200,
             'code999': 30,
-            'koil2026': 50 // 限时代码
+            'koil2026': 50
         };
 
         // ================================================================
-        //  启动闪屏
+        //  启动闪屏（保持不变）
         // ================================================================
         let splashTimer = null;
 
@@ -1170,9 +1149,7 @@
                         splash.classList.add('hide');
                         setTimeout(() => {
                             splash.style.display = 'none';
-                            // 显示主应用
                             document.getElementById('appContainer').classList.add('active');
-                            // 初始化应用
                             initApp();
                         }, 800);
                     }, 600);
@@ -1207,54 +1184,152 @@
         }
 
         // ================================================================
-        //  球体闪电特效（纯CSS+JS）
+        //  核心：球体内部枝状闪电绘制（Canvas）
         // ================================================================
-        let lightningInterval = null;
+        let lightningCtx = null;
+        let lightningCanvas = null;
+        let lightningData = []; // 存储闪电分支数据
 
-        function generateLightning() {
-            const container = document.getElementById('lightningContainer');
-            container.innerHTML = '';
-            const count = 18 + Math.floor(Math.random() * 12);
-            for (let i = 0; i < count; i++) {
-                const bolt = document.createElement('div');
-                bolt.className = 'lightning';
+        /**
+         * 生成一条枝状闪电（递归分形）
+         * @param {number} x1 起点x
+         * @param {number} y1 起点y
+         * @param {number} x2 终点x
+         * @param {number} y2 终点y
+         * @param {number} depth 递归深度
+         * @param {number} maxDepth 最大深度
+         * @param {Array} segments 存储线段数组
+         */
+        function generateLightningBranch(x1, y1, x2, y2, depth, maxDepth, segments) {
+            segments.push({ x1, y1, x2, y2, depth });
+            if (depth >= maxDepth) return;
+
+            const midX = (x1 + x2) / 2 + (Math.random() - 0.5) * (x2 - x1) * 0.6;
+            const midY = (y1 + y2) / 2 + (Math.random() - 0.5) * (y2 - y1) * 0.6;
+            const dx = x2 - x1;
+            const dy = y2 - y1;
+            const len = Math.sqrt(dx * dx + dy * dy);
+            const angle = Math.atan2(dy, dx);
+
+            // 主分支继续递归
+            generateLightningBranch(x1, y1, midX, midY, depth + 1, maxDepth, segments);
+            generateLightningBranch(midX, midY, x2, y2, depth + 1, maxDepth, segments);
+
+            // 随机产生侧向分支（以一定概率）
+            if (Math.random() < 0.3 && depth < maxDepth - 1) {
+                const branchAngle = angle + (Math.random() - 0.5) * 1.2;
+                const branchLen = len * (0.3 + Math.random() * 0.4);
+                const bx = midX + Math.cos(branchAngle) * branchLen;
+                const by = midY + Math.sin(branchAngle) * branchLen;
+                generateLightningBranch(midX, midY, bx, by, depth + 2, maxDepth, segments);
+            }
+        }
+
+        /**
+         * 生成多条闪电并绘制到 Canvas
+         */
+        function drawLightning() {
+            if (!lightningCtx || !lightningCanvas) return;
+            const ctx = lightningCtx;
+            const w = lightningCanvas.width;
+            const h = lightningCanvas.height;
+            ctx.clearRect(0, 0, w, h);
+
+            // 生成 5～8 条主闪电
+            const numBolts = 5 + Math.floor(Math.random() * 4);
+            for (let b = 0; b < numBolts; b++) {
+                const segments = [];
+                // 随机起点在球体中心附近偏上
+                const cx = w / 2 + (Math.random() - 0.5) * 40;
+                const cy = h / 2 + (Math.random() - 0.5) * 40;
+                // 终点随机分布在圆周上
                 const angle = Math.random() * Math.PI * 2;
-                const radius = 60 + Math.random() * 40;
-                const x = 50 + Math.cos(angle) * radius * 0.4;
-                const y = 50 + Math.sin(angle) * radius * 0.4;
-                const len = 20 + Math.random() * 50;
-                const rot = Math.atan2(Math.sin(angle) * radius * 0.4, Math.cos(angle) * radius * 0.4) * (180 / Math.PI);
-                bolt.style.left = x + '%';
-                bolt.style.top = y + '%';
-                bolt.style.height = len + 'px';
-                bolt.style.transform = `translate(-50%, -100%) rotate(${rot + 90}deg)`;
-                bolt.style.animationDelay = (Math.random() * 0.8) + 's';
-                bolt.style.animationDuration = (0.2 + Math.random() * 0.4) + 's';
-                bolt.style.width = (1 + Math.random() * 3) + 'px';
-                bolt.style.opacity = 0.3 + Math.random() * 0.5;
-                container.appendChild(bolt);
+                const radius = 80 + Math.random() * 30;
+                const ex = w / 2 + Math.cos(angle) * radius;
+                const ey = h / 2 + Math.sin(angle) * radius;
+
+                generateLightningBranch(cx, cy, ex, ey, 0, 4 + Math.floor(Math.random() * 3), segments);
+
+                // 绘制该闪电
+                const baseWidth = 1.5 + Math.random() * 2;
+                const baseAlpha = 0.4 + Math.random() * 0.4;
+                segments.forEach((seg, idx) => {
+                    const alpha = baseAlpha * (1 - seg.depth / 7);
+                    const width = baseWidth * (1 - seg.depth / 7) * 0.8;
+                    ctx.beginPath();
+                    ctx.moveTo(seg.x1, seg.y1);
+                    ctx.lineTo(seg.x2, seg.y2);
+                    ctx.strokeStyle = `rgba(180, 230, 255, ${alpha})`;
+                    ctx.lineWidth = width;
+                    ctx.shadowColor = 'rgba(100, 200, 255, 0.5)';
+                    ctx.shadowBlur = 12;
+                    ctx.stroke();
+                });
+
+                // 增加高光节点（亮斑）
+                segments.forEach(seg => {
+                    if (Math.random() < 0.1) {
+                        ctx.beginPath();
+                        ctx.arc(seg.x2, seg.y2, 2 + Math.random() * 4, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(200, 240, 255, ${0.3 + Math.random() * 0.5})`;
+                        ctx.shadowBlur = 20;
+                        ctx.fill();
+                    }
+                });
+            }
+
+            // 额外增加一些飘散的电弧小点
+            for (let i = 0; i < 20; i++) {
+                const x = Math.random() * w;
+                const y = Math.random() * h;
+                const r = 1 + Math.random() * 3;
+                ctx.beginPath();
+                ctx.arc(x, y, r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(150, 220, 255, ${0.1 + Math.random() * 0.2})`;
+                ctx.shadowBlur = 10;
+                ctx.fill();
             }
         }
 
-        function startLightning() {
-            if (lightningInterval) clearInterval(lightningInterval);
-            generateLightning();
-            lightningInterval = setInterval(generateLightning, 1500);
+        /**
+         * 初始化闪电Canvas，并定时刷新（形成动态流动感）
+         */
+        function initLightning() {
+            lightningCanvas = document.getElementById('lightningCanvas');
+            if (!lightningCanvas) return;
+            // 设置实际尺寸匹配容器
+            const rect = lightningCanvas.parentElement.getBoundingClientRect();
+            const size = rect.width || 260;
+            lightningCanvas.width = size;
+            lightningCanvas.height = size;
+            lightningCtx = lightningCanvas.getContext('2d');
+
+            // 首次绘制
+            drawLightning();
+
+            // 每 2.5 秒重绘一次，产生动态变化（流动感）
+            setInterval(() => {
+                drawLightning();
+            }, 2500);
         }
 
-        function stopLightning() {
-            if (lightningInterval) {
-                clearInterval(lightningInterval);
-                lightningInterval = null;
+        /**
+         * 点击【开始】后加速球体旋转和闪电流动
+         */
+        function setSpeedUp(enable) {
+            const container = document.getElementById('globeContainer');
+            if (enable) {
+                container.classList.add('speed-up');
+            } else {
+                container.classList.remove('speed-up');
             }
         }
 
         // ================================================================
-        //  能量消耗动画
+        //  能量消耗动画（与之前类似，但配合加速）
         // ================================================================
         let burnInterval = null;
         let isBurning = false;
-        let burnMode = null;
 
         function startEnergyBurn() {
             const userData = getCurrentUserData();
@@ -1268,12 +1343,10 @@
                 return;
             }
 
-            const globe = document.getElementById('mainGlobe');
             const energyDisplay = document.getElementById('energyDisplay');
-
             isBurning = true;
-            globe.classList.add('speed-up');
             energyDisplay.classList.add('burning');
+            setSpeedUp(true); // 加速球体
 
             burnInterval = setInterval(() => {
                 const data = getCurrentUserData();
@@ -1295,7 +1368,6 @@
                 saveCurrentUserData(data);
                 updateEnergyDisplay();
                 updateProfileStats();
-                // 如果能量归零，停止
                 if (data.energy <= 0) {
                     stopEnergyBurn();
                     alert('💀 能量已耗尽！');
@@ -1309,23 +1381,18 @@
                 burnInterval = null;
             }
             isBurning = false;
-            const globe = document.getElementById('mainGlobe');
             const energyDisplay = document.getElementById('energyDisplay');
-            globe.classList.remove('speed-up');
             energyDisplay.classList.remove('burning');
+            setSpeedUp(false); // 恢复常速
         }
 
         // ================================================================
-        //  更新UI
+        //  UI 更新函数
         // ================================================================
         function updateEnergyDisplay() {
             const userData = getCurrentUserData();
             const display = document.getElementById('energyDisplay');
-            if (userData) {
-                display.textContent = userData.energy || 0;
-            } else {
-                display.textContent = '0';
-            }
+            display.textContent = userData ? userData.energy || 0 : '0';
         }
 
         function updateProfileStats() {
@@ -1339,7 +1406,6 @@
                 document.getElementById('profilePhone').textContent = '📱 ' + (phone || '未绑定');
                 const level = Math.floor((userData.energy || 0) / 100) + 1;
                 document.getElementById('profileLevel').textContent = '🌱 Lv.' + level;
-                // 勋章
                 const badges = userData.badges || ['🌱 觉醒者'];
                 if ((userData.totalEarned || 0) >= 100 && !badges.includes('💎 百能量师')) badges.push('💎 百能量师');
                 if ((userData.totalBurned || 0) >= 100 && !badges.includes('🔥 燃境大师')) badges.push('🔥 燃境大师');
@@ -1397,17 +1463,17 @@
 
         function updateDailyTask() {
             const userData = getCurrentUserData();
+            const btn = document.getElementById('dailyTaskBtn');
+            const status = document.getElementById('dailyTaskStatus');
             if (!userData) {
-                document.getElementById('dailyTaskBtn').disabled = true;
-                document.getElementById('dailyTaskBtn').style.opacity = '0.4';
-                document.getElementById('dailyTaskStatus').textContent = '请先登录';
+                btn.disabled = true;
+                btn.style.opacity = '0.4';
+                status.textContent = '请先登录';
                 return;
             }
             const last = userData.lastDaily || 0;
             const now = Date.now();
             const canClaim = now - last > 24 * 60 * 60 * 1000;
-            const btn = document.getElementById('dailyTaskBtn');
-            const status = document.getElementById('dailyTaskStatus');
             if (canClaim) {
                 btn.disabled = false;
                 btn.style.opacity = '1';
@@ -1427,12 +1493,11 @@
         }
 
         // ================================================================
-        //  登录弹窗逻辑
+        //  登录弹窗逻辑（同前）
         // ================================================================
         function showLoginModal(tab = 'login') {
             const modal = document.getElementById('loginModal');
             modal.classList.add('show');
-            // 切换到对应tab
             document.querySelectorAll('#loginModal .tab-btn').forEach(b => b.classList.remove('active'));
             if (tab === 'login') {
                 document.querySelector('#loginModal .tab-btn[data-tab="login"]').classList.add('active');
@@ -1452,7 +1517,6 @@
         }
 
         function setupModalAuth() {
-            // Tab切换
             document.querySelectorAll('#loginModal .tab-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     document.querySelectorAll('#loginModal .tab-btn').forEach(b => b.classList.remove('active'));
@@ -1469,7 +1533,6 @@
                 });
             });
 
-            // 注册
             document.getElementById('modalRegisterBtn').addEventListener('click', function() {
                 const phone = document.getElementById('modalRegPhone').value.trim();
                 const pwd = document.getElementById('modalRegPassword').value.trim();
@@ -1496,11 +1559,9 @@
                 document.getElementById('modalRegPhone').value = '';
                 document.getElementById('modalRegPassword').value = '';
                 document.getElementById('modalRegConfirm').value = '';
-                // 切换到登录
                 document.querySelector('#loginModal .tab-btn[data-tab="login"]').click();
             });
 
-            // 登录
             document.getElementById('modalLoginBtn').addEventListener('click', function() {
                 const phone = document.getElementById('modalLoginPhone').value.trim();
                 const pwd = document.getElementById('modalLoginPassword').value.trim();
@@ -1521,7 +1582,6 @@
                 }, 600);
             });
 
-            // 忘记密码
             document.getElementById('modalForgotPwd').addEventListener('click', function() {
                 const phone = prompt('📱 输入手机号，密码将重置为 123456');
                 if (!phone) return;
@@ -1532,7 +1592,6 @@
                 alert('✅ 密码已重置为 123456');
             });
 
-            // 游客
             document.getElementById('modalGuestEnter').addEventListener('click', function() {
                 setCurrentUser('guest_' + Date.now());
                 hideLoginModal();
@@ -1540,13 +1599,11 @@
                 alert('🧊 游客模式，数据不会保存');
             });
 
-            // 关闭
             document.getElementById('modalCloseBtn').addEventListener('click', hideLoginModal);
             document.getElementById('loginModal').addEventListener('click', function(e) {
                 if (e.target === this) hideLoginModal();
             });
 
-            // 回车登录/注册
             document.querySelectorAll('#loginModal input').forEach(input => {
                 input.addEventListener('keydown', function(e) {
                     if (e.key === 'Enter') {
@@ -1586,21 +1643,25 @@
 
             navItems.forEach(item => {
                 item.addEventListener('click', function() {
-                    // 如果正在燃烧，停止
                     if (isBurning) stopEnergyBurn();
 
-                    // 切换导航高亮
                     navItems.forEach(n => n.classList.remove('active'));
                     this.classList.add('active');
 
-                    // 切换页面
                     const pageId = this.dataset.page;
                     Object.keys(pages).forEach(key => {
                         pages[key].classList.toggle('active', key === pageId);
                     });
 
-                    // 刷新对应页面数据
-                    if (pageId === 'pageLog') renderLogs();
+                    if (pageId === 'pageLog') {
+                        // 检查登录状态
+                        const user = getCurrentUser();
+                        if (!user || user.startsWith('guest_')) {
+                            showLoginModal('login');
+                            return;
+                        }
+                        renderLogs();
+                    }
                     if (pageId === 'pageRank') renderRank();
                     if (pageId === 'pageProfile') updateProfileStats();
                     if (pageId === 'pageTasks') updateDailyTask();
@@ -1614,26 +1675,24 @@
         function setupStartButton() {
             document.getElementById('btnStart').addEventListener('click', function() {
                 const code = document.getElementById('codeInput').value.trim().toLowerCase();
-                const userData = getCurrentUserData();
+                const user = getCurrentUser();
+                const isLoggedIn = user && !user.startsWith('guest_');
 
-                // 检查是否登录（游客也算未登录）
-                const phone = getCurrentUser();
-                const isLoggedIn = phone && !phone.startsWith('guest_');
-
-                // 如果未登录，弹出登录弹窗
+                // 未登录 -> 弹出登录弹窗
                 if (!isLoggedIn) {
                     showLoginModal('login');
                     return;
                 }
 
-                // 已登录：处理代码
+                // 已登录
+                const userData = getCurrentUserData();
                 if (!code) {
-                    // 没有输入代码，直接触发燃烧
+                    // 无代码 -> 直接燃烧
                     startEnergyBurn();
                     return;
                 }
 
-                // 有代码：尝试兑换
+                // 有代码 -> 尝试兑换
                 if (CODE_MAP.hasOwnProperty(code)) {
                     const gain = CODE_MAP[code];
                     userData.energy = (userData.energy || 0) + gain;
@@ -1650,12 +1709,11 @@
                     document.getElementById('codeInput').value = '';
                     alert('✅ 兑换成功！获得 ' + gain + ' 能量');
                 } else {
-                    // 无效代码，但已登录，触发燃烧
+                    // 无效代码，触发燃烧
                     startEnergyBurn();
                 }
             });
 
-            // 回车触发
             document.getElementById('codeInput').addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') {
                     document.getElementById('btnStart').click();
@@ -1667,10 +1725,9 @@
         //  任务按钮
         // ================================================================
         function setupTasks() {
-            // 每日任务
             document.getElementById('dailyTaskBtn').addEventListener('click', function() {
                 const userData = getCurrentUserData();
-                if (!userData) { alert('请先登录'); showLoginModal('login'); return; }
+                if (!userData) { showLoginModal('login'); return; }
                 const last = userData.lastDaily || 0;
                 if (Date.now() - last < 24 * 60 * 60 * 1000) {
                     alert('⏳ 今日已领取，请明天再来');
@@ -1686,10 +1743,9 @@
                 alert('✅ 领取成功！获得 20 能量');
             });
 
-            // 限时代码
             document.getElementById('limitedCodeBtn').addEventListener('click', function() {
                 const userData = getCurrentUserData();
-                if (!userData) { alert('请先登录'); showLoginModal('login'); return; }
+                if (!userData) { showLoginModal('login'); return; }
                 if (userData.usedLimitedCode) {
                     alert('⏳ 限时代码已使用过');
                     return;
@@ -1724,7 +1780,6 @@
                 }
             });
 
-            // 清空日志
             document.getElementById('clearLogBtn').addEventListener('click', function() {
                 const userData = getCurrentUserData();
                 if (!userData) { alert('请先登录'); return; }
@@ -1735,7 +1790,6 @@
                 }
             });
 
-            // 设置开关（简单演示）
             document.getElementById('toggleSound').addEventListener('click', function() {
                 this.classList.toggle('active');
                 alert('🔊 音效已' + (this.classList.contains('active') ? '开启' : '关闭'));
@@ -1750,10 +1804,10 @@
         //  初始化
         // ================================================================
         function initApp() {
-            // 启动闪电
-            startLightning();
+            // 初始化闪电 Canvas
+            initLightning();
 
-            // 初始化UI
+            // 刷新UI
             refreshAllUI();
 
             // 设置导航
@@ -1771,21 +1825,14 @@
             // 设置登录弹窗
             setupModalAuth();
 
-            // 如果已登录，更新所有UI
-            if (getCurrentUser()) {
-                refreshAllUI();
-            }
-
             console.log('✅ Koil · 铸钥 加载完成！');
-            console.log('💡 输入密钥兑换能量，点击【开始】消耗能量');
-            console.log('💡 未登录时点击【开始】会弹出登录弹窗');
+            console.log('💡 球体内部闪电持续旋转流动，点击【开始】加速并消耗能量');
         }
 
         // ================================================================
         //  页面加载入口
         // ================================================================
         document.addEventListener('DOMContentLoaded', function() {
-            // 先显示闪屏
             showSplash();
         });
     </script>
