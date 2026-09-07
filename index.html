@@ -3,206 +3,35 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Koil</title>
+    <title>Koil · 铸钥</title>
     <!-- PWA 配置 -->
     <link rel="manifest" href="manifest.json" />
     <meta name="theme-color" content="#07070d" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* ===== 全局样式 ===== */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* ===== 全局重置 & 基础 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
             background: #07070d;
             color: #b0f0ff;
             font-family: 'Courier New', monospace;
             min-height: 100vh;
-            padding: 16px;
-            background-image: 
-                linear-gradient(rgba(0,255,255,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,255,255,0.03) 1px, transparent 1px);
-            background-size: 30px 30px;
-            overflow-x: hidden;
-        }
-
-        .page { display: none; max-width: 420px; margin: 0 auto; position: relative; z-index: 2; }
-        .page.active { display: block; }
-
-        .cyber-card {
-            background: rgba(10,10,20,0.8);
-            backdrop-filter: blur(10px);
-            border: 1px solid #00ffff;
-            box-shadow: 0 0 20px rgba(0,255,255,0.2);
-            border-radius: 24px;
-            padding: 24px 20px;
-            margin-bottom: 16px;
-            transition: box-shadow 0.3s;
-            position: relative;
-            z-index: 3;
-        }
-
-        .cyber-btn {
-            background: linear-gradient(135deg, #00ccff, #9900ff);
-            border: none;
-            color: #fff;
-            font-weight: bold;
-            padding: 14px;
-            border-radius: 40px;
-            width: 100%;
-            font-size: 18px;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            font-family: 'Courier New', monospace;
-            letter-spacing: 2px;
-            box-shadow: 0 0 15px rgba(0,204,255,0.3);
-        }
-        .cyber-btn:active {
-            transform: scale(0.96);
-            box-shadow: 0 0 60px rgba(255,0,255,0.8);
-            background: #ff00ff;
-        }
-        .cyber-btn-sm {
-            padding: 10px 16px;
-            font-size: 14px;
-            width: auto;
-            min-width: 100px;
-        }
-
-        .cyber-input {
-            background: rgba(0,20,30,0.6);
-            border: 1px solid #00ccff;
-            color: #b0f0ff;
-            padding: 12px 16px;
-            border-radius: 12px;
-            width: 100%;
-            font-size: 16px;
-            outline: none;
-            font-family: 'Courier New', monospace;
-        }
-        .cyber-input:focus {
-            border-color: #ff00ff;
-            box-shadow: 0 0 20px rgba(255,0,255,0.3);
-        }
-
-        .back-link {
-            color: #00ffff;
-            cursor: pointer;
-            font-size: 14px;
-            opacity: 0.7;
-            transition: 0.3s;
-            display: inline-block;
-            margin-bottom: 12px;
-        }
-        .back-link:hover { opacity: 1; text-shadow: 0 0 20px #00ffff; }
-
-        .energy-number {
-            font-size: 52px;
-            font-weight: bold;
-            text-align: center;
-            color: #00ffff;
-            text-shadow: 0 0 40px rgba(0,255,255,0.5);
-            font-family: 'Courier New', monospace;
-            letter-spacing: 4px;
-        }
-
-        .menu-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-top: 16px;
-        }
-        .menu-item {
-            background: rgba(0,30,50,0.4);
-            border: 1px solid rgba(0,255,255,0.2);
-            border-radius: 16px;
-            padding: 20px 12px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 14px;
-        }
-        .menu-item:hover {
-            border-color: #ff00ff;
-            box-shadow: 0 0 30px rgba(255,0,255,0.2);
-            transform: translateY(-2px);
-        }
-        .menu-item .icon { font-size: 32px; display: block; margin-bottom: 6px; }
-
-        .user-bar {
+            overflow: hidden;
+            /* 隐藏滚动条，全屏APP风格 */
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 13px;
-            opacity: 0.7;
-            border-bottom: 1px solid rgba(0,255,255,0.1);
-            padding-bottom: 12px;
-            margin-bottom: 16px;
+            flex-direction: column;
+            background-image:
+                linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
         }
 
-        .cyber-msg { color: #ffaa66; font-size: 14px; margin-top: 12px; text-align: center; min-height: 24px; }
-        .cyber-msg.success { color: #66ffaa; }
-        .cyber-msg.error { color: #ff4466; }
-
-        .code-tip { font-size: 12px; opacity: 0.4; text-align: center; margin-top: 12px; }
-
-        /* 个人中心 */
-        .avatar-large {
-            width: 80px; height: 80px; border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #00ffff, #4400aa);
-            border: 2px solid #00ffff;
-            box-shadow: 0 0 40px rgba(0,255,255,0.3);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 40px; margin: 0 auto 12px;
-        }
-        .badge-item {
-            display: inline-block;
-            background: rgba(0,255,255,0.1);
-            border: 1px solid rgba(0,255,255,0.2);
-            border-radius: 30px;
-            padding: 6px 16px; margin: 4px;
-            font-size: 13px;
-        }
-
-        /* 日志 */
-        .log-item {
-            background: rgba(0,20,30,0.3);
-            border-left: 3px solid #00ffff;
-            padding: 10px 14px; margin-bottom: 8px;
-            border-radius: 0 12px 12px 0;
-            font-size: 13px;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .log-item .log-amount.plus { color: #66ffaa; }
-        .log-item .log-amount.minus { color: #ff4466; }
-        .log-item .log-time { opacity: 0.4; font-size: 11px; }
-
-        /* 排行榜 */
-        .rank-item {
-            display: flex; align-items: center; gap: 12px;
-            padding: 10px 12px;
-            border-bottom: 1px solid rgba(0,255,255,0.05);
-        }
-        .rank-item .rank-num { width: 30px; font-weight: bold; color: #00ffff; text-align: center; }
-        .rank-item .rank-name { flex: 1; }
-        .rank-item .rank-energy { color: #ff66ff; font-weight: bold; }
-
-        /* 设置 */
-        .setting-row {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 0; border-bottom: 1px solid rgba(0,255,255,0.05);
-        }
-        .toggle {
-            width: 44px; height: 24px; background: #333;
-            border-radius: 30px; cursor: pointer; transition: 0.3s; position: relative;
-        }
-        .toggle.active { background: #00ccff; }
-        .toggle::after {
-            content: ''; position: absolute; top: 2px; left: 2px;
-            width: 20px; height: 20px; background: #fff; border-radius: 50%; transition: 0.3s;
-        }
-        .toggle.active::after { left: 22px; }
-
-        /* ===== Koil 启动闪屏专属样式 ===== */
+        /* ===== 启动闪屏（保留，但时序已改） ===== */
         #splashScreen {
             position: fixed;
             top: 0;
@@ -221,21 +50,18 @@
             opacity: 0;
             pointer-events: none;
         }
-
-        /* 背景网格 */
         .splash-grid {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: 
+            background-image:
                 linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
             background-size: 40px 40px;
             opacity: 0.3;
         }
-
         .splash-content {
             position: relative;
             z-index: 10;
@@ -249,13 +75,9 @@
             animation: contentFadeIn 1s ease 0.3s forwards;
         }
         @keyframes contentFadeIn {
-            to { opacity: 1; }
-        }
-
-        /* ---- 品牌标识 ---- */
-        .brand-wrapper {
-            text-align: center;
-            position: relative;
+            to {
+                opacity: 1;
+            }
         }
         .brand-text {
             font-size: clamp(72px, 18vw, 140px);
@@ -263,32 +85,40 @@
             font-family: 'Arial Black', 'Impact', sans-serif;
             letter-spacing: 6px;
             color: #00f0ff;
-            text-shadow: 
-                0 0 10px rgba(0, 240, 255, 0.4),
-                0 0 30px rgba(0, 240, 255, 0.2),
-                0 0 60px rgba(150, 0, 255, 0.3);
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.4), 0 0 30px rgba(0, 240, 255, 0.2), 0 0 60px rgba(150, 0, 255, 0.3);
             animation: textGlitch 2.5s infinite, textFlow 3s infinite alternate;
-            position: relative;
-            display: inline-block;
         }
-
-        /* 故障抖动 */
         @keyframes textGlitch {
-            0%, 90%, 100% { transform: translate(0); opacity: 1; }
-            92% { transform: translate(-2px, 1px) skewX(0.5deg); }
-            94% { transform: translate(2px, -1px) skewX(-0.5deg); }
-            96% { transform: translate(-1px, 1px); }
-            98% { transform: translate(1px, -1px); }
+            0%,
+            90%,
+            100% {
+                transform: translate(0);
+                opacity: 1;
+            }
+            92% {
+                transform: translate(-2px, 1px) skewX(0.5deg);
+            }
+            94% {
+                transform: translate(2px, -1px) skewX(-0.5deg);
+            }
+            96% {
+                transform: translate(-1px, 1px);
+            }
+            98% {
+                transform: translate(1px, -1px);
+            }
         }
-
-        /* 流光扫过 */
         @keyframes textFlow {
-            0% { text-shadow: 0 0 10px rgba(0, 240, 255, 0.4), 0 0 30px rgba(0, 240, 255, 0.2), 0 0 60px rgba(150, 0, 255, 0.3); }
-            50% { text-shadow: 0 0 20px rgba(0, 240, 255, 0.8), 0 0 60px rgba(0, 240, 255, 0.5), 0 0 100px rgba(150, 0, 255, 0.6); }
-            100% { text-shadow: 0 0 10px rgba(0, 240, 255, 0.4), 0 0 30px rgba(0, 240, 255, 0.2), 0 0 60px rgba(150, 0, 255, 0.3); }
+            0% {
+                text-shadow: 0 0 10px rgba(0, 240, 255, 0.4), 0 0 30px rgba(0, 240, 255, 0.2), 0 0 60px rgba(150, 0, 255, 0.3);
+            }
+            50% {
+                text-shadow: 0 0 20px rgba(0, 240, 255, 0.8), 0 0 60px rgba(0, 240, 255, 0.5), 0 0 100px rgba(150, 0, 255, 0.6);
+            }
+            100% {
+                text-shadow: 0 0 10px rgba(0, 240, 255, 0.4), 0 0 30px rgba(0, 240, 255, 0.2), 0 0 60px rgba(150, 0, 255, 0.3);
+            }
         }
-
-        /* 品牌下方读音 */
         .brand-phonetic {
             font-size: 20px;
             color: rgba(180, 180, 255, 0.6);
@@ -296,8 +126,6 @@
             margin-top: -8px;
             font-family: 'Courier New', monospace;
         }
-
-        /* ---- 电池充能 ---- */
         .battery-wrapper {
             display: flex;
             flex-direction: column;
@@ -317,7 +145,6 @@
             overflow: hidden;
             padding: 2px;
         }
-        /* 电池头 */
         .battery-frame::after {
             content: '';
             position: absolute;
@@ -330,7 +157,6 @@
             border-radius: 0 6px 6px 0;
             box-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
         }
-
         .battery-fill {
             height: 100%;
             width: 0%;
@@ -341,29 +167,28 @@
             box-shadow: inset 0 0 20px rgba(0, 200, 255, 0.3);
             overflow: hidden;
         }
-        /* 电池内部流光粒子 */
         .battery-fluid {
             position: absolute;
             top: 0;
             left: 0;
             width: 200%;
             height: 100%;
-            background: repeating-linear-gradient(
-                90deg,
-                transparent 0px,
-                rgba(255, 255, 255, 0.15) 2px,
-                transparent 6px,
-                rgba(0, 255, 255, 0.1) 8px,
-                transparent 12px
-            );
+            background: repeating-linear-gradient(90deg,
+                    transparent 0px,
+                    rgba(255, 255, 255, 0.15) 2px,
+                    transparent 6px,
+                    rgba(0, 255, 255, 0.1) 8px,
+                    transparent 12px);
             animation: fluidFlow 1.2s linear infinite;
         }
         @keyframes fluidFlow {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
         }
-
-        /* 电池内部二进制代码雨 */
         .battery-code-rain {
             position: absolute;
             top: 0;
@@ -379,7 +204,6 @@
             line-height: 28px;
             letter-spacing: 4px;
         }
-
         .battery-label {
             font-size: 14px;
             color: rgba(180, 200, 255, 0.7);
@@ -393,8 +217,6 @@
             text-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
             font-family: 'Courier New', monospace;
         }
-
-        /* ---- 能量爆发粒子 ---- */
         #energyBurstContainer {
             position: fixed;
             top: 0;
@@ -413,115 +235,659 @@
             animation: burstFly 1s ease-out forwards;
         }
         @keyframes burstFly {
-            0% { transform: translate(0, 0) scale(0.8); opacity: 1; }
-            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+            0% {
+                transform: translate(0, 0) scale(0.8);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty)) scale(0);
+                opacity: 0;
+            }
         }
 
-        /* ===== 用户协议弹窗 ===== */
-        #agreementOverlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(10px);
-            z-index: 9998;
-            display: none; align-items: center; justify-content: center;
-            padding: 20px;
-        }
-        #agreementOverlay.show { display: flex; }
-        #agreementOverlay .agreement-box {
-            background: rgba(10,10,20,0.95);
-            border: 1px solid #00ffff;
-            border-radius: 24px;
-            padding: 30px 24px;
-            max-width: 400px;
+        /* ===== 主页面容器 ===== */
+        #appContainer {
+            display: none;
+            /* 闪屏结束后显示 */
+            flex-direction: column;
+            height: 100vh;
+            max-height: 100vh;
             width: 100%;
-            box-shadow: 0 0 60px rgba(0,255,255,0.2);
-            max-height: 90vh;
+            max-width: 480px;
+            margin: 0 auto;
+            position: relative;
+            padding-bottom: 70px;
+            /* 给底部导航留空间 */;
+        }
+        #appContainer.active {
+            display: flex;
+        }
+
+        /* ===== 页面内容区域 ===== */
+        .page-content {
+            flex: 1;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
             overflow-y: auto;
         }
-        #agreementOverlay .agreement-box h2 {
-            text-align: center; color: #00ffff; margin-bottom: 16px;
+        .page-content.active {
+            display: flex;
         }
-        #agreementOverlay .agreement-box .content {
-            font-size: 13px; opacity: 0.7; line-height: 1.8;
-            max-height: 300px; overflow-y: auto;
-            padding-right: 8px;
+
+        /* ===== 首页：球体 + 输入框 ===== */
+        #pageHome .sphere-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            gap: 30px;
+            margin-top: -20px;
         }
-        #agreementOverlay .agreement-box .btn-group {
-            display: flex; gap: 12px; margin-top: 20px;
+
+        /* ---- 球体组件 ---- */
+        .globe-container {
+            width: 260px;
+            height: 260px;
+            position: relative;
+            perspective: 600px;
         }
-        #agreementOverlay .agreement-box .btn-group button {
-            flex: 1; padding: 12px; border-radius: 30px; border: none;
-            font-size: 16px; cursor: pointer; font-family: 'Courier New', monospace;
+        .globe {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(0, 200, 255, 0.15), rgba(10, 10, 30, 0.6));
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(0, 255, 255, 0.25);
+            box-shadow: 0 0 60px rgba(0, 255, 255, 0.15), inset 0 0 60px rgba(0, 255, 255, 0.05);
+            position: relative;
+            animation: globeBreath 3s ease-in-out infinite alternate, globeSpin 20s linear infinite;
+            transform-style: preserve-3d;
+            overflow: hidden;
+        }
+        /* 球体呼吸 */
+        @keyframes globeBreath {
+            0% {
+                transform: scale(0.98);
+                box-shadow: 0 0 40px rgba(0, 255, 255, 0.1), inset 0 0 40px rgba(0, 255, 255, 0.02);
+            }
+            100% {
+                transform: scale(1.02);
+                box-shadow: 0 0 80px rgba(0, 255, 255, 0.25), inset 0 0 80px rgba(0, 255, 255, 0.08);
+            }
+        }
+        /* 球体自转 */
+        @keyframes globeSpin {
+            0% {
+                background-position: 0% 50%;
+            }
+            100% {
+                background-position: 200% 50%;
+            }
+        }
+
+        /* 球体内部的闪电特效（用SVG或canvas绘制，这里用纯CSS模拟立体闪电） */
+        .lightning-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .lightning {
+            position: absolute;
+            width: 2px;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgba(100, 200, 255, 0.3));
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5), 0 0 40px rgba(100, 200, 255, 0.2);
+            animation: lightningFlash 0.5s ease-in-out infinite alternate;
+            transform-origin: bottom center;
+        }
+        @keyframes lightningFlash {
+            0% {
+                opacity: 0.3;
+                transform: scaleY(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: scaleY(1.2);
+            }
+        }
+
+        /* 球体上叠加的网格线（赛博风） */
+        .globe-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background:
+                repeating-linear-gradient(0deg, rgba(0, 255, 255, 0.06) 0px, rgba(0, 255, 255, 0.06) 1px, transparent 1px, transparent 12px),
+                repeating-linear-gradient(90deg, rgba(255, 0, 255, 0.04) 0px, rgba(255, 0, 255, 0.04) 1px, transparent 1px, transparent 12px);
+            animation: gridRotate 30s linear infinite;
+        }
+        @keyframes gridRotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* 球体加速状态 */
+        .globe.speed-up {
+            animation: globeBreath 1.5s ease-in-out infinite alternate, globeSpin 4s linear infinite !important;
+        }
+        .globe.speed-up .lightning {
+            animation-duration: 0.15s !important;
+        }
+
+        /* ---- 能量数字显示 ---- */
+        .energy-display {
+            font-size: 48px;
+            font-weight: bold;
+            color: #00f0ff;
+            text-shadow: 0 0 30px rgba(0, 240, 255, 0.3);
+            font-family: 'Courier New', monospace;
+            letter-spacing: 4px;
+            text-align: center;
+            min-height: 60px;
+            transition: all 0.3s;
+        }
+        .energy-display.burning {
+            color: #ff6644;
+            text-shadow: 0 0 40px rgba(255, 100, 68, 0.5);
+            animation: energyPulse 0.3s ease-in-out infinite alternate;
+        }
+        @keyframes energyPulse {
+            0% {
+                transform: scale(1);
+            }
+            100% {
+                transform: scale(1.03);
+            }
+        }
+
+        /* ---- 输入框 + 按钮 ---- */
+        .code-input-wrapper {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+            max-width: 360px;
+            align-items: center;
+        }
+        .code-input-wrapper input {
+            flex: 1;
+            background: rgba(0, 20, 30, 0.6);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            color: #fff;
+            padding: 12px 16px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-family: 'Courier New', monospace;
+            outline: none;
+            transition: all 0.3s;
+            letter-spacing: 2px;
+        }
+        .code-input-wrapper input:focus {
+            border-color: #00f0ff;
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
+        }
+        .code-input-wrapper .btn-start {
+            background: linear-gradient(135deg, #00ccff, #9900ff);
+            border: none;
+            color: #fff;
+            font-weight: bold;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 2px;
+            box-shadow: 0 0 20px rgba(0, 204, 255, 0.3);
+            white-space: nowrap;
+        }
+        .code-input-wrapper .btn-start:active {
+            transform: scale(0.95);
+            box-shadow: 0 0 60px rgba(255, 0, 255, 0.6);
+            background: #ff00ff;
+        }
+
+        /* ===== 底部导航 ===== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            background: rgba(10, 10, 20, 0.85);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(0, 255, 255, 0.15);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 8px 0 env(safe-area-inset-bottom);
+            z-index: 50;
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.8);
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            padding: 4px 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: rgba(180, 200, 255, 0.4);
+            font-size: 11px;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+            position: relative;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .nav-item .nav-icon {
+            font-size: 24px;
+            transition: all 0.3s;
+        }
+        .nav-item .nav-label {
+            transition: all 0.3s;
+        }
+        .nav-item.active {
+            color: #00f0ff;
+        }
+        .nav-item.active .nav-icon {
+            text-shadow: 0 0 30px rgba(0, 240, 255, 0.5);
+        }
+        .nav-item.active .nav-label {
+            text-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+        }
+        /* 点击电光反馈 */
+        .nav-item:active {
+            transform: scale(0.9);
+        }
+        .nav-item:active .nav-icon {
+            color: #ff00ff;
+            text-shadow: 0 0 60px rgba(255, 0, 255, 0.8);
+        }
+
+        /* ===== 登录弹窗 ===== */
+        #loginModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(12px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        #loginModal.show {
+            display: flex;
+        }
+        .login-modal-box {
+            background: rgba(10, 10, 25, 0.92);
+            border: 1px solid #00f0ff;
+            border-radius: 24px;
+            padding: 32px 24px;
+            max-width: 380px;
+            width: 100%;
+            box-shadow: 0 0 60px rgba(0, 240, 255, 0.15), inset 0 0 60px rgba(0, 240, 255, 0.02);
+            position: relative;
+        }
+        .login-modal-box .close-btn {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            font-size: 24px;
+            color: rgba(180, 200, 255, 0.4);
+            cursor: pointer;
+            transition: 0.3s;
+            background: none;
+            border: none;
+            font-family: 'Courier New', monospace;
+        }
+        .login-modal-box .close-btn:hover {
+            color: #ff4466;
+            transform: rotate(90deg);
+        }
+        .login-modal-box h2 {
+            text-align: center;
+            color: #00f0ff;
+            margin-bottom: 20px;
+            font-size: 24px;
+            letter-spacing: 4px;
+            text-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
+        }
+        .login-modal-box .tab-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+            padding-bottom: 12px;
+        }
+        .login-modal-box .tab-group .tab-btn {
+            flex: 1;
+            text-align: center;
+            padding: 8px 0;
+            cursor: pointer;
+            border-radius: 30px;
+            font-weight: bold;
+            transition: 0.3s;
+            color: #6699aa;
+            font-family: 'Courier New', monospace;
+            background: none;
+            border: none;
+            font-size: 14px;
+        }
+        .login-modal-box .tab-group .tab-btn.active {
+            background: rgba(0, 255, 255, 0.08);
+            color: #00f0ff;
+            border: 1px solid rgba(0, 255, 255, 0.15);
+        }
+        .login-modal-box .form-group {
+            margin-bottom: 14px;
+        }
+        .login-modal-box .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(0, 20, 30, 0.5);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 30px;
+            color: #b0f0ff;
+            font-size: 15px;
+            font-family: 'Courier New', monospace;
+            outline: none;
             transition: 0.3s;
         }
-        #agreementOverlay .agreement-box .btn-group .btn-agree {
+        .login-modal-box .form-group input:focus {
+            border-color: #00f0ff;
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.1);
+        }
+        .login-modal-box .form-actions {
+            margin-top: 16px;
+        }
+        .login-modal-box .form-actions button {
+            width: 100%;
+            padding: 14px;
+            border-radius: 40px;
+            border: none;
+            font-size: 16px;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 2px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #00ccff, #9900ff);
+            color: #fff;
+            box-shadow: 0 0 30px rgba(0, 204, 255, 0.2);
+            transition: 0.15s;
+        }
+        .login-modal-box .form-actions button:active {
+            transform: scale(0.96);
+            box-shadow: 0 0 60px rgba(255, 0, 255, 0.5);
+        }
+        .login-modal-box .form-msg {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 13px;
+            min-height: 20px;
+            color: #ffaa66;
+        }
+        .login-modal-box .form-msg.success {
+            color: #66ffaa;
+        }
+        .login-modal-box .guest-link {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 13px;
+            color: rgba(180, 200, 255, 0.4);
+            cursor: pointer;
+            transition: 0.3s;
+            border-top: 1px dashed rgba(255, 0, 255, 0.15);
+            padding-top: 16px;
+        }
+        .login-modal-box .guest-link:hover {
+            color: #00f0ff;
+        }
+
+        /* ===== 任务页面 ===== */
+        .task-card {
+            background: rgba(0, 20, 30, 0.4);
+            border: 1px solid rgba(0, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            width: 100%;
+            max-width: 360px;
+            text-align: center;
+        }
+        .task-card .task-icon {
+            font-size: 36px;
+        }
+        .task-card .task-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 8px 0;
+            color: #00f0ff;
+        }
+        .task-card .task-desc {
+            font-size: 14px;
+            opacity: 0.6;
+        }
+        .task-card .task-btn {
+            margin-top: 12px;
+            padding: 10px 28px;
+            border-radius: 30px;
+            border: none;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
             background: linear-gradient(135deg, #00ccff, #9900ff);
             color: #fff;
         }
-        #agreementOverlay .agreement-box .btn-group .btn-agree:active { transform: scale(0.95); }
-        #agreementOverlay .agreement-box .btn-group .btn-disagree {
-            background: rgba(255,68,102,0.2);
+        .task-card .task-btn:active {
+            transform: scale(0.95);
+        }
+        .task-card .task-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* ===== 日志页面 ===== */
+        .log-list {
+            width: 100%;
+            max-width: 380px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        .log-item {
+            background: rgba(0, 20, 30, 0.3);
+            border-left: 3px solid #00f0ff;
+            padding: 10px 14px;
+            margin-bottom: 8px;
+            border-radius: 0 12px 12px 0;
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .log-item .log-amount.plus {
+            color: #66ffaa;
+        }
+        .log-item .log-amount.minus {
             color: #ff4466;
-            border: 1px solid #ff4466;
+        }
+        .log-item .log-time {
+            opacity: 0.4;
+            font-size: 11px;
         }
 
-        /* ===== 粒子 & Canvas ===== */
-        .particle-container {
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%;
-            pointer-events: none; z-index: 10; overflow: hidden;
+        /* ===== 个人中心 ===== */
+        .profile-card {
+            background: rgba(0, 20, 30, 0.3);
+            border: 1px solid rgba(0, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 20px;
+            width: 100%;
+            max-width: 360px;
+            margin-bottom: 12px;
+            text-align: center;
         }
-        .float-particle {
-            position: absolute; width: 6px; height: 6px; border-radius: 50%;
-            background: #00ffff; box-shadow: 0 0 15px #00ffff;
-            animation: floatOut 2s ease-out forwards;
+        .profile-avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #00ffff, #4400aa);
+            border: 2px solid #00f0ff;
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 12px;
         }
-        @keyframes floatOut {
-            0% { transform: translate(0,0) scale(1); opacity: 1; }
-            100% { transform: translate(var(--fx), var(--fy)) scale(0); opacity: 0; }
+        .profile-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        .profile-stats .stat-item {
+            text-align: center;
+        }
+        .profile-stats .stat-item .stat-num {
+            font-size: 22px;
+            font-weight: bold;
+            color: #00f0ff;
+        }
+        .profile-stats .stat-item .stat-label {
+            font-size: 11px;
+            opacity: 0.4;
+        }
+        .badge-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 12px;
+        }
+        .badge-item {
+            background: rgba(0, 255, 255, 0.08);
+            border: 1px solid rgba(0, 255, 255, 0.15);
+            border-radius: 30px;
+            padding: 4px 14px;
+            font-size: 12px;
+        }
+        .profile-settings-btn {
+            margin-top: 16px;
+            padding: 10px 24px;
+            border-radius: 30px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            background: rgba(0, 20, 30, 0.4);
+            color: #b0f0ff;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .profile-settings-btn:active {
+            transform: scale(0.95);
+            border-color: #00f0ff;
         }
 
-        #codeRainCanvas {
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 0; pointer-events: none; opacity: 0.3;
+        /* ===== 排行榜页面 ===== */
+        .rank-list {
+            width: 100%;
+            max-width: 380px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        .rank-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.05);
+        }
+        .rank-item .rank-num {
+            width: 30px;
+            font-weight: bold;
+            color: #00f0ff;
+            text-align: center;
+        }
+        .rank-item .rank-name {
+            flex: 1;
+        }
+        .rank-item .rank-energy {
+            color: #ff66ff;
+            font-weight: bold;
         }
 
-        .page { position: relative; z-index: 2; }
-        .cyber-card { position: relative; z-index: 3; }
-
-        /* ===== 燃烧球体 ===== */
-        #energySphere {
-            width: 160px; height: 160px; border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #00ffff, #0066ff, #4400aa);
-            box-shadow: 0 0 60px rgba(0,255,255,0.5);
-            transition: all 0.5s ease;
-            margin: 0 auto;
+        /* ===== 页面标题 ===== */
+        .page-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00f0ff;
+            text-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
+            margin-bottom: 20px;
+            letter-spacing: 4px;
         }
 
-        /* ===== 反馈入口 ===== */
-        .feedback-link {
-            text-align: center; font-size: 12px; opacity: 0.2;
-            margin-top: 8px; cursor: pointer; transition: 0.3s;
+        /* ===== 工具类 ===== */
+        .text-glitch {
+            animation: textGlitch 2.5s infinite;
         }
-        .feedback-link:hover { opacity: 0.5; }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 420px) {
+            .globe-container {
+                width: 200px;
+                height: 200px;
+            }
+            .energy-display {
+                font-size: 36px;
+            }
+            .code-input-wrapper {
+                flex-direction: column;
+            }
+            .code-input-wrapper input {
+                width: 100%;
+            }
+            .code-input-wrapper .btn-start {
+                width: 100%;
+                justify-content: center;
+            }
+            .bottom-nav .nav-item .nav-label {
+                font-size: 10px;
+            }
+            .bottom-nav .nav-item .nav-icon {
+                font-size: 20px;
+            }
+        }
     </style>
 </head>
 <body>
 
     <!-- ===== Koil 启动闪屏 ===== -->
     <div id="splashScreen">
-        <!-- 背景网格 -->
         <div class="splash-grid"></div>
-
         <div class="splash-content">
-            <!-- 品牌标识 -->
             <div class="brand-wrapper">
-                <div class="brand-text" id="brandText">Koil</div>
+                <div class="brand-text">Koil</div>
                 <div class="brand-phonetic">kɔɪl</div>
             </div>
-
-            <!-- 电池充能 -->
             <div class="battery-wrapper">
                 <div class="battery-frame">
                     <div class="battery-fill" id="batteryFill">
@@ -533,222 +899,175 @@
                 <div class="battery-percent" id="batteryPercent">0%</div>
             </div>
         </div>
-
-        <!-- 能量爆发粒子容器 -->
         <div id="energyBurstContainer"></div>
     </div>
 
-    <!-- ===== 用户协议弹窗 ===== -->
-    <div id="agreementOverlay">
-        <div class="agreement-box">
-            <h2>⚡ 用户协议 & 隐私政策</h2>
-            <div class="content">
-                <p><strong>欢迎使用「Koil」</strong></p>
-                <p style="margin-top:8px;">1. 本应用为赛博风格能量管理工具，所有数据存储在您的浏览器本地，不会上传至任何服务器。</p>
-                <p style="margin-top:8px;">2. 您需要注册手机号以保存能量数据，手机号仅用作本地标识，不会泄露。</p>
-                <p style="margin-top:8px;">3. 游客模式数据不会保存，切换设备或清除浏览器缓存将丢失数据。</p>
-                <p style="margin-top:8px;">4. 密钥代码为预设娱乐功能，不代表任何实际价值。</p>
-                <p style="margin-top:8px; color:#00ffff;">5. 继续使用即表示您同意以上条款。</p>
-            </div>
-            <div class="btn-group">
-                <button class="btn-disagree" id="agreeDisagree">拒绝</button>
-                <button class="btn-agree" id="agreeConfirm">✅ 同意并继续</button>
-            </div>
-        </div>
-    </div>
+    <!-- ===== 主应用容器 ===== -->
+    <div id="appContainer">
 
-    <!-- ===== 代码雨 ===== -->
-    <canvas id="codeRainCanvas"></canvas>
-    <div class="particle-container" id="particleContainer"></div>
-
-    <!-- ============================================================ -->
-    <!-- 首页 -->
-    <!-- ============================================================ -->
-    <div class="page" id="pageHome">
-        <div class="cyber-card">
-            <div class="user-bar">
-                <span id="homeUserPhone">📱 未登录</span>
-                <span id="homeUserLevel">🌱 Lv.1</span>
-            </div>
-            <div style="text-align:center; padding:12px 0;">
-                <div style="font-size:14px; opacity:0.5;">⚡ 当前总能量</div>
-                <div class="energy-number" id="homeEnergy">0</div>
-            </div>
-            <div class="menu-grid">
-                <div class="menu-item" id="goToCode"><span class="icon">🔑</span>密钥解析</div>
-                <div class="menu-item" id="goToBurn"><span class="icon">🔥</span>能量燃烧</div>
-                <div class="menu-item" id="goToHistory"><span class="icon">📜</span>历史日志</div>
-                <div class="menu-item" id="goToProfile"><span class="icon">👤</span>个人中心</div>
-                <div class="menu-item" id="goToTasks"><span class="icon">📋</span>任务中心</div>
-                <div class="menu-item" id="goToRank"><span class="icon">🏆</span>排行榜</div>
-                <div class="menu-item" id="goToSettings"><span class="icon">⚙️</span>设置</div>
-                <div class="menu-item" id="logoutBtn" style="border-color:rgba(255,68,102,0.3);"><span class="icon">🚪</span>退出</div>
-            </div>
-            <div class="feedback-link" id="feedbackBtn">📨 反馈 / 建议</div>
-        </div>
-    </div>
-
-    <!-- ============================================================ -->
-    <!-- 登录页 -->
-    <!-- ============================================================ -->
-    <div class="page" id="pageLogin">
-        <div class="cyber-card">
-            <h1 class="text-3xl font-bold text-center mb-2" style="color:#00ffff; text-shadow:0 0 30px #00ffff80;">
-                ⚡ Koil
-            </h1>
-            <p class="text-center text-sm opacity-60 mb-6">〜 能量即代码 〜</p>
-            <div style="display:flex; gap:8px; margin-bottom:20px; border-bottom:1px solid rgba(0,255,255,0.2); padding-bottom:12px;">
-                <div style="flex:1; text-align:center; padding:10px 0; cursor:pointer; border-radius:30px; font-weight:bold; background:rgba(0,255,255,0.1); color:#00ffff; border:1px solid rgba(0,255,255,0.2);" id="tabLogin">🔐 登录</div>
-                <div style="flex:1; text-align:center; padding:10px 0; cursor:pointer; border-radius:30px; font-weight:bold; color:#6699aa;" id="tabRegister">✨ 注册</div>
-            </div>
-            <div id="loginForm">
-                <div class="mb-4"><input type="text" id="loginPhone" class="cyber-input" placeholder="手机号" /></div>
-                <div class="mb-4"><input type="password" id="loginPassword" class="cyber-input" placeholder="密码" /></div>
-                <button class="cyber-btn" id="loginBtn">▶ 登录</button>
-                <div style="text-align:right;margin-top:8px;"><span class="back-link" id="forgotPwdLink">⛓️ 忘记密码？</span></div>
-                <div class="cyber-msg" id="loginMsg"></div>
-            </div>
-            <div id="registerForm" style="display:none;">
-                <div class="mb-4"><input type="text" id="regPhone" class="cyber-input" placeholder="手机号" /></div>
-                <div class="mb-4"><input type="password" id="regPassword" class="cyber-input" placeholder="密码（至少6位）" /></div>
-                <div class="mb-4"><input type="password" id="regConfirm" class="cyber-input" placeholder="确认密码" /></div>
-                <button class="cyber-btn" id="registerBtn">⚡ 注册</button>
-                <div class="cyber-msg" id="regMsg"></div>
-            </div>
-            <div style="text-align:center; margin-top:16px; border-top:1px dashed rgba(255,0,255,0.2); padding-top:16px; font-size:13px; opacity:0.6;">
-                🧊 游客模式 · <span class="back-link" id="guestEnter">点击进入体验</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- ============================================================ -->
-    <!-- 密钥解析 -->
-    <!-- ============================================================ -->
-    <div class="page" id="pageCode">
-        <div class="cyber-card">
-            <span class="back-link" id="backHomeFromCode">← 返回</span>
-            <h2 style="text-align:center; color:#ff66ff;">🔑 密钥解析</h2>
-            <div class="mb-4" style="margin-top:16px;">
-                <input type="text" id="codeInput" class="cyber-input" placeholder="例如 abc123" style="text-transform:lowercase; font-size:20px;" />
-            </div>
-            <button class="cyber-btn" id="submitCodeBtn">⚡ 解析密钥</button>
-            <div class="cyber-msg" id="codeMsg"></div>
-            <div class="code-tip">预设：abc123(100) · cyber2026(50) · neon666(200) · code999(30)</div>
-        </div>
-    </div>
-
-    <!-- ============================================================ -->
-    <!-- 燃烧 -->
-    <!-- ============================================================ -->
-    <div class="page" id="pageBurn">
-        <div class="cyber-card">
-            <span class="back-link" id="backHomeFromBurn">← 返回</span>
-            <div style="text-align:center; padding:8px 0;">
-                <div style="font-size:13px; opacity:0.4;">🔥 剩余能量</div>
-                <div class="energy-number" id="burnEnergyDisplay">0</div>
-            </div>
-            <div id="energySphere"></div>
-            <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:16px;">
-                <button class="cyber-btn cyber-btn-sm" id="burnSlowBtn">🐢 匀速慢燃</button>
-                <button class="cyber-btn cyber-btn-sm" id="burnFastBtn" style="background:linear-gradient(135deg,#ff4400,#ff00ff);">💥 极速爆燃</button>
-                <button class="cyber-btn cyber-btn-sm" id="burnStopBtn" style="background:rgba(255,68,102,0.3);border:1px solid #ff4466;box-shadow:none;">⏹ 停止</button>
-            </div>
-            <div style="text-align:center;padding:12px;font-size:14px;opacity:0.6;" id="burnStatus">⚡ 待机中</div>
-        </div>
-    </div>
-
-    <!-- ============================================================ -->
-    <!-- 历史日志 -->
-    <!-- ============================================================ -->
-    <div class="page" id="pageHistory">
-        <div class="cyber-card">
-            <span class="back-link" id="backHomeFromHistory">← 返回</span>
-            <h2 style="text-align:center; color:#00ffff;">📜 历史日志</h2>
-            <div id="historyList" style="margin-top:16px; max-height:500px; overflow-y:auto;"></div>
-            <div style="text-align:center; margin-top:12px;">
-                <button class="cyber-btn cyber-btn-sm" id="clearHistoryBtn" style="background:rgba(255,68,102,0.2);border:1px solid #ff4466;box-shadow:none;">🗑 清空日志</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ============================================================ -->
-    <!-- 个人中心 -->
-    <!-- ============================================================ -->
-    <div class="page" id="pageProfile">
-        <div class="cyber-card">
-            <span class="back-link" id="backHomeFromProfile">← 返回</span>
-            <div class="avatar-large" id="profileAvatar">👾</div>
-            <div style="text-align:center;">
-                <div style="font-size:20px; font-weight:bold;" id="profileName">赛博觉醒者</div>
-                <div style="opacity:0.5; font-size:13px;" id="profilePhone">📱 未绑定</div>
-                <div style="margin-top:8px;"><span class="badge-item" id="profileLevel">🌱 Lv.1</span></div>
-            </div>
-            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-top:20px; text-align:center;">
-                <div><div style="font-size:24px; color:#00ffff;" id="profileEnergy">0</div><div style="font-size:11px; opacity:0.4;">当前能量</div></div>
-                <div><div style="font-size:24px; color:#66ffaa;" id="profileEarned">0</div><div style="font-size:11px; opacity:0.4;">累计获得</div></div>
-                <div><div style="font-size:24px; color:#ff4466;" id="profileBurned">0</div><div style="font-size:11px; opacity:0.4;">累计燃烧</div></div>
-            </div>
-            <div style="margin-top:16px; border-top:1px solid rgba(0,255,255,0.1); padding-top:16px;">
-                <div style="font-size:13px; opacity:0.5; margin-bottom:8px;">🏅 成就勋章</div>
-                <div id="badgeList"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ============================================================ -->
-    <!-- 任务中心 -->
-    <!-- ============================================================ -->
-    <div class="page" id="pageTasks">
-        <div class="cyber-card">
-            <span class="back-link" id="backHomeFromTasks">← 返回</span>
-            <h2 style="text-align:center; color:#ff66ff;">📋 任务中心</h2>
-            <div id="taskDaily" style="margin-top:16px; background:rgba(0,30,50,0.3); border-radius:16px; padding:20px; text-align:center; border:1px solid rgba(0,255,255,0.1);">
-                <div style="font-size:36px;">📅</div>
-                <div style="font-size:18px; font-weight:bold; margin:8px 0;">每日登录奖励</div>
-                <div style="opacity:0.5; font-size:13px;">领取 +20 能量</div>
-                <button class="cyber-btn cyber-btn-sm" id="dailyTaskBtn" style="margin-top:12px;">🎁 领取奖励</button>
-                <div style="font-size:12px; opacity:0.3; margin-top:8px;" id="dailyTaskStatus">今日可领取</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ============================================================ -->
-    <!-- 排行榜 -->
-    <!-- ============================================================ -->
-    <div class="page" id="pageRank">
-        <div class="cyber-card">
-            <span class="back-link" id="backHomeFromRank">← 返回</span>
-            <h2 style="text-align:center; color:#ffaa00;">🏆 燃烧排行榜</h2>
-            <div id="rankList" style="margin-top:16px; max-height:500px; overflow-y:auto;"></div>
-        </div>
-    </div>
-
-    <!-- ============================================================ -->
-    <!-- 设置 -->
-    <!-- ============================================================ -->
-    <div class="page" id="pageSettings">
-        <div class="cyber-card">
-            <span class="back-link" id="backHomeFromSettings">← 返回</span>
-            <h2 style="text-align:center; color:#00ffff;">⚙️ 设置</h2>
-            <div style="margin-top:16px;">
-                <div class="setting-row">
-                    <span>🔊 音效</span>
-                    <div class="toggle active" id="toggleSound"></div>
+        <!-- ============================================================ -->
+        <!-- 首页：球体 + 输入框 -->
+        <!-- ============================================================ -->
+        <div class="page-content active" id="pageHome">
+            <div class="sphere-wrapper">
+                <!-- 球体 -->
+                <div class="globe-container">
+                    <div class="globe" id="mainGlobe">
+                        <div class="globe-grid"></div>
+                        <div class="lightning-container" id="lightningContainer">
+                            <!-- 闪电由JS动态生成 -->
+                        </div>
+                    </div>
                 </div>
-                <div class="setting-row">
-                    <span>🎨 赛博主题（紫/蓝）</span>
-                    <div class="toggle active" id="toggleTheme"></div>
+
+                <!-- 能量显示 -->
+                <div class="energy-display" id="energyDisplay">0</div>
+
+                <!-- 代码输入 -->
+                <div class="code-input-wrapper">
+                    <input type="text" id="codeInput" placeholder="输入密钥代码 ..." />
+                    <button class="btn-start" id="btnStart">开始</button>
                 </div>
-                <div class="setting-row">
-                    <span>🔒 隐私设置</span>
-                    <span style="opacity:0.3; font-size:13px;">已加密</span>
-                </div>
-                <div class="setting-row" style="border-bottom:none;">
-                    <span>🧒 青少年模式</span>
-                    <div class="toggle" id="toggleYouth"></div>
-                </div>
-                <button class="cyber-btn" id="settingsLogoutBtn" style="margin-top:20px; background:rgba(255,68,102,0.3);border:1px solid #ff4466;box-shadow:none;">🚪 退出登录</button>
             </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 任务页面 -->
+        <!-- ============================================================ -->
+        <div class="page-content" id="pageTasks">
+            <div class="page-title">📋 任务中心</div>
+            <div class="task-card">
+                <div class="task-icon">📅</div>
+                <div class="task-title">每日登录奖励</div>
+                <div class="task-desc">每日首次登录领取 +20 能量</div>
+                <button class="task-btn" id="dailyTaskBtn">领取奖励</button>
+                <div style="font-size:12px;opacity:0.4;margin-top:8px;" id="dailyTaskStatus">今日可领取</div>
+            </div>
+            <div class="task-card">
+                <div class="task-icon">⚡</div>
+                <div class="task-title">限时代码</div>
+                <div class="task-desc">使用代码 <strong>koil2026</strong> 兑换 50 能量</div>
+                <button class="task-btn" id="limitedCodeBtn">立即兑换</button>
+            </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 排行榜页面 (kɔɪl) -->
+        <!-- ============================================================ -->
+        <div class="page-content" id="pageRank">
+            <div class="page-title">🏆 燃烧排行榜</div>
+            <div class="rank-list" id="rankList">
+                <div style="text-align:center;opacity:0.4;padding:30px 0;">暂无数据</div>
+            </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 日志页面 -->
+        <!-- ============================================================ -->
+        <div class="page-content" id="pageLog">
+            <div class="page-title">📜 能量日志</div>
+            <div class="log-list" id="logList">
+                <div style="text-align:center;opacity:0.4;padding:30px 0;">暂无记录</div>
+            </div>
+            <button class="profile-settings-btn" id="clearLogBtn" style="margin-top:12px;">🗑 清空日志</button>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 个人中心 -->
+        <!-- ============================================================ -->
+        <div class="page-content" id="pageProfile">
+            <div class="page-title">👤 我</div>
+            <div class="profile-card" id="profileCard">
+                <div class="profile-avatar">👾</div>
+                <div style="font-size:18px;font-weight:bold;" id="profileName">赛博觉醒者</div>
+                <div style="opacity:0.4;font-size:13px;" id="profilePhone">未登录</div>
+                <div style="margin-top:6px;"><span class="badge-item" id="profileLevel">🌱 Lv.1</span></div>
+
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <div class="stat-num" id="profileEnergy">0</div>
+                        <div class="stat-label">当前能量</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-num" id="profileEarned">0</div>
+                        <div class="stat-label">累计获得</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-num" id="profileBurned">0</div>
+                        <div class="stat-label">累计燃烧</div>
+                    </div>
+                </div>
+
+                <div class="badge-list" id="badgeList">
+                    <span class="badge-item">🌱 觉醒者</span>
+                </div>
+            </div>
+
+            <!-- 设置区域（内置登录/注册入口） -->
+            <div class="profile-card" style="border-color:rgba(0,255,255,0.15);">
+                <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
+                    <button class="profile-settings-btn" id="profileLoginBtn">🔐 登录</button>
+                    <button class="profile-settings-btn" id="profileRegisterBtn">✨ 注册</button>
+                    <button class="profile-settings-btn" id="profileLogoutBtn" style="border-color:rgba(255,68,102,0.3);">🚪 退出</button>
+                </div>
+                <div style="margin-top:12px;border-top:1px solid rgba(0,255,255,0.05);padding-top:12px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
+                    <span style="font-size:12px;opacity:0.3;">⚙️ 设置</span>
+                    <span class="badge-item" style="cursor:pointer;" id="toggleSound">🔊 音效</span>
+                    <span class="badge-item" style="cursor:pointer;" id="toggleTheme">🎨 主题</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ===== 底部导航 ===== -->
+    <nav class="bottom-nav" id="bottomNav">
+        <div class="nav-item active" data-page="pageHome">
+            <span class="nav-icon">⌂</span>
+            <span class="nav-label">首页</span>
+        </div>
+        <div class="nav-item" data-page="pageTasks">
+            <span class="nav-icon">📋</span>
+            <span class="nav-label">任务</span>
+        </div>
+        <div class="nav-item" data-page="pageRank">
+            <span class="nav-icon">🏆</span>
+            <span class="nav-label">kɔɪl</span>
+        </div>
+        <div class="nav-item" data-page="pageLog">
+            <span class="nav-icon">📜</span>
+            <span class="nav-label">日志</span>
+        </div>
+        <div class="nav-item" data-page="pageProfile">
+            <span class="nav-icon">👤</span>
+            <span class="nav-label">我</span>
+        </div>
+    </nav>
+
+    <!-- ===== 登录弹窗 ===== -->
+    <div id="loginModal">
+        <div class="login-modal-box">
+            <button class="close-btn" id="modalCloseBtn">✕</button>
+            <h2>⚡ 登录 · 铸钥</h2>
+            <div class="tab-group">
+                <button class="tab-btn active" data-tab="login">登录</button>
+                <button class="tab-btn" data-tab="register">注册</button>
+            </div>
+            <div id="modalLoginForm">
+                <div class="form-group"><input type="text" id="modalLoginPhone" placeholder="手机号" /></div>
+                <div class="form-group"><input type="password" id="modalLoginPassword" placeholder="密码" /></div>
+                <div class="form-actions"><button id="modalLoginBtn">▶ 登录</button></div>
+                <div class="form-msg" id="modalLoginMsg"></div>
+                <div style="text-align:right;margin-top:4px;"><span style="font-size:12px;opacity:0.3;cursor:pointer;" id="modalForgotPwd">忘记密码？</span></div>
+            </div>
+            <div id="modalRegisterForm" style="display:none;">
+                <div class="form-group"><input type="text" id="modalRegPhone" placeholder="手机号" /></div>
+                <div class="form-group"><input type="password" id="modalRegPassword" placeholder="密码（至少6位）" /></div>
+                <div class="form-group"><input type="password" id="modalRegConfirm" placeholder="确认密码" /></div>
+                <div class="form-actions"><button id="modalRegisterBtn">⚡ 注册</button></div>
+                <div class="form-msg" id="modalRegMsg"></div>
+            </div>
+            <div class="guest-link" id="modalGuestEnter">🧊 游客模式 · 点击体验</div>
         </div>
     </div>
 
@@ -757,26 +1076,27 @@
     <!-- ============================================================ -->
     <script>
         // ================================================================
-        //  📦 Koil 完整 JavaScript —— 闪屏 + 全部功能
+        //  📦 Koil · 铸钥  —— 完整 JavaScript
+        //  全部功能：闪屏、球体、导航、登录弹窗、能量逻辑
         // ================================================================
 
         // ---------- 工具函数 ----------
         function getUsers() {
-            const data = localStorage.getItem('cyber_users');
+            const data = localStorage.getItem('koil_users');
             return data ? JSON.parse(data) : {};
         }
 
         function saveUsers(usersObj) {
-            localStorage.setItem('cyber_users', JSON.stringify(usersObj));
+            localStorage.setItem('koil_users', JSON.stringify(usersObj));
         }
 
         function getCurrentUser() {
-            return localStorage.getItem('cyber_current_user') || null;
+            return localStorage.getItem('koil_current_user') || null;
         }
 
         function setCurrentUser(phone) {
-            if (phone) localStorage.setItem('cyber_current_user', phone);
-            else localStorage.removeItem('cyber_current_user');
+            if (phone) localStorage.setItem('koil_current_user', phone);
+            else localStorage.removeItem('koil_current_user');
         }
 
         function getCurrentUserData() {
@@ -795,8 +1115,8 @@
         }
 
         function generateNickname() {
-            const p = ['赛博','霓虹','量子','脉冲','星云','虚空','以太','幻影'];
-            const s = ['觉醒者','燃境','行者','骑士','领主','先驱','主宰','幽灵'];
+            const p = ['赛博', '霓虹', '量子', '脉冲', '星云', '虚空', '以太', '幻影'];
+            const s = ['觉醒者', '燃境', '行者', '骑士', '领主', '先驱', '主宰', '幽灵'];
             return p[Math.floor(Math.random() * p.length)] + s[Math.floor(Math.random() * s.length)];
         }
 
@@ -805,33 +1125,12 @@
             'abc123': 100,
             'cyber2026': 50,
             'neon666': 200,
-            'code999': 30
+            'code999': 30,
+            'koil2026': 50 // 限时代码
         };
 
-        // ---------- 页面切换 ----------
-        function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            const el = document.getElementById(pageId);
-            if (el) el.classList.add('active');
-        }
-
-        // ---------- 更新首页 ----------
-        function updateHomePage() {
-            const userData = getCurrentUserData();
-            const phone = getCurrentUser();
-            document.getElementById('homeUserPhone').textContent = phone ? '📱 ' + phone : '未登录';
-            if (userData) {
-                document.getElementById('homeEnergy').textContent = userData.energy || 0;
-                const level = Math.floor((userData.energy || 0) / 100) + 1;
-                document.getElementById('homeUserLevel').textContent = '🌱 Lv.' + level;
-            } else {
-                document.getElementById('homeEnergy').textContent = '0';
-                document.getElementById('homeUserLevel').textContent = '🌱 Lv.1';
-            }
-        }
-
         // ================================================================
-        //  Koil 启动闪屏控制
+        //  启动闪屏
         // ================================================================
         let splashTimer = null;
 
@@ -840,8 +1139,7 @@
             const batteryFill = document.getElementById('batteryFill');
             const batteryPercent = document.getElementById('batteryPercent');
             const batteryCodeRain = document.getElementById('batteryCodeRain');
-            
-            // 生成电池内部二进制代码雨
+
             function generateCodeRain() {
                 let codeStr = '';
                 for (let i = 0; i < 40; i++) {
@@ -852,44 +1150,36 @@
             }
             generateCodeRain();
 
-            // 检查是否已同意协议
-            const agreed = localStorage.getItem('cyber_agreed');
             let charge = 0;
             const chargeStep = 0.6 + Math.random() * 0.5;
             const chargeInterval = 50;
 
-            // 清除旧定时器
             if (splashTimer) clearInterval(splashTimer);
 
-            // 启动充能
             splashTimer = setInterval(() => {
                 charge = Math.min(charge + chargeStep, 100);
                 batteryFill.style.width = charge + '%';
                 batteryPercent.textContent = Math.floor(charge) + '%';
 
-                // 充能至 100% 时触发爆发
                 if (charge >= 100) {
                     clearInterval(splashTimer);
                     splashTimer = null;
                     triggerEnergyBurst();
-                    
-                    // 延迟跳转
+
                     setTimeout(() => {
                         splash.classList.add('hide');
                         setTimeout(() => {
                             splash.style.display = 'none';
-                            if (!agreed) {
-                                document.getElementById('agreementOverlay').classList.add('show');
-                            } else {
-                                showLoginPage();
-                            }
+                            // 显示主应用
+                            document.getElementById('appContainer').classList.add('active');
+                            // 初始化应用
+                            initApp();
                         }, 800);
                     }, 600);
                 }
             }, chargeInterval);
         }
 
-        // 能量爆发粒子特效
         function triggerEnergyBurst() {
             const container = document.getElementById('energyBurstContainer');
             const colors = ['#00f0ff', '#aa66ff', '#ff44aa', '#00ffaa'];
@@ -901,7 +1191,6 @@
                 particle.style.height = size + 'px';
                 particle.style.background = colors[Math.floor(Math.random() * colors.length)];
                 particle.style.boxShadow = `0 0 ${size}px ${particle.style.background}`;
-                
                 const angle = Math.random() * Math.PI * 2;
                 const dist = 80 + Math.random() * 400;
                 const tx = Math.cos(angle) * dist;
@@ -917,293 +1206,162 @@
             }
         }
 
-        // ---------- 协议 ----------
-        document.getElementById('agreeConfirm').addEventListener('click', function() {
-            localStorage.setItem('cyber_agreed', 'true');
-            document.getElementById('agreementOverlay').classList.remove('show');
-            showLoginPage();
-        });
-
-        document.getElementById('agreeDisagree').addEventListener('click', function() {
-            alert('您需要同意用户协议才能使用本应用。');
-        });
-
-        // ---------- 显示登录页 ----------
-        function showLoginPage() {
-            const phone = getCurrentUser();
-            if (phone && phone.startsWith('guest_')) {
-                showPage('pageHome');
-                updateHomePage();
-                return;
-            }
-            if (phone) {
-                showPage('pageHome');
-                updateHomePage();
-                return;
-            }
-            showPage('pageLogin');
-            document.getElementById('tabLogin').click();
-        }
-
         // ================================================================
-        //  登录注册
+        //  球体闪电特效（纯CSS+JS）
         // ================================================================
-        function setupAuth() {
-            const tabLogin = document.getElementById('tabLogin');
-            const tabRegister = document.getElementById('tabRegister');
-            const loginForm = document.getElementById('loginForm');
-            const registerForm = document.getElementById('registerForm');
+        let lightningInterval = null;
 
-            tabLogin.addEventListener('click', function() {
-                this.style.background = 'rgba(0,255,255,0.1)';
-                this.style.color = '#00ffff';
-                this.style.border = '1px solid rgba(0,255,255,0.2)';
-                tabRegister.style.background = 'transparent';
-                tabRegister.style.color = '#6699aa';
-                tabRegister.style.border = 'none';
-                loginForm.style.display = 'block';
-                registerForm.style.display = 'none';
-                document.getElementById('loginMsg').textContent = '';
-            });
-
-            tabRegister.addEventListener('click', function() {
-                this.style.background = 'rgba(0,255,255,0.1)';
-                this.style.color = '#00ffff';
-                this.style.border = '1px solid rgba(0,255,255,0.2)';
-                tabLogin.style.background = 'transparent';
-                tabLogin.style.color = '#6699aa';
-                tabLogin.style.border = 'none';
-                loginForm.style.display = 'none';
-                registerForm.style.display = 'block';
-                document.getElementById('regMsg').textContent = '';
-            });
-
-            document.getElementById('registerBtn').addEventListener('click', function() {
-                const phone = document.getElementById('regPhone').value.trim();
-                const pwd = document.getElementById('regPassword').value.trim();
-                const confirm = document.getElementById('regConfirm').value.trim();
-                const msg = document.getElementById('regMsg');
-                if (!phone || !pwd || !confirm) { msg.textContent = '⚠️ 请填写完整'; return; }
-                if (pwd.length < 6) { msg.textContent = '⚠️ 密码至少6位'; return; }
-                if (pwd !== confirm) { msg.textContent = '⚠️ 密码不一致'; return; }
-                const users = getUsers();
-                if (users[phone]) { msg.textContent = '❌ 手机号已注册'; return; }
-                users[phone] = { password: pwd, energy: 0, totalEarned: 0, totalBurned: 0, history: [], nickname: generateNickname(), badges: ['🌱 觉醒者'], lastDaily: 0 };
-                saveUsers(users);
-                msg.textContent = '✅ 注册成功！请登录';
-                msg.className = 'cyber-msg success';
-                document.getElementById('regPhone').value = '';
-                document.getElementById('regPassword').value = '';
-                document.getElementById('regConfirm').value = '';
-                tabLogin.click();
-            });
-
-            document.getElementById('loginBtn').addEventListener('click', function() {
-                const phone = document.getElementById('loginPhone').value.trim();
-                const pwd = document.getElementById('loginPassword').value.trim();
-                const msg = document.getElementById('loginMsg');
-                if (!phone || !pwd) { msg.textContent = '⚠️ 请输入完整'; return; }
-                const users = getUsers();
-                if (!users[phone]) { msg.textContent = '❌ 账号不存在'; return; }
-                if (users[phone].password !== pwd) { msg.textContent = '❌ 密码错误'; return; }
-                setCurrentUser(phone);
-                msg.textContent = '✅ 登录成功！';
-                msg.className = 'cyber-msg success';
-                setTimeout(() => {
-                    showPage('pageHome');
-                    updateHomePage();
-                    document.getElementById('loginPassword').value = '';
-                    msg.textContent = '';
-                }, 600);
-            });
-
-            document.getElementById('forgotPwdLink').addEventListener('click', function() {
-                const phone = prompt('📱 输入手机号，密码将重置为 123456');
-                if (!phone) return;
-                const users = getUsers();
-                if (!users[phone]) { alert('❌ 未注册'); return; }
-                users[phone].password = '123456';
-                saveUsers(users);
-                alert('✅ 密码已重置为 123456');
-            });
-
-            document.getElementById('guestEnter').addEventListener('click', function() {
-                setCurrentUser('guest_' + Date.now());
-                alert('🧊 游客模式，数据不会保存');
-                showPage('pageHome');
-                updateHomePage();
-            });
-
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' && document.getElementById('pageLogin').classList.contains('active')) {
-                    if (loginForm.style.display !== 'none') document.getElementById('loginBtn').click();
-                    else document.getElementById('registerBtn').click();
-                }
-            });
-        }
-
-        // ================================================================
-        //  代码雨动画
-        // ================================================================
-        const canvas = document.getElementById('codeRainCanvas');
-        const ctx = canvas.getContext('2d');
-        let rainDrops = [];
-        const RAIN_COLS = 40;
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        function initRain() {
-            rainDrops = [];
-            const colWidth = canvas.width / RAIN_COLS;
-            for (let i = 0; i < RAIN_COLS; i++) {
-                rainDrops.push({
-                    x: i * colWidth + Math.random() * colWidth,
-                    y: Math.random() * canvas.height,
-                    speed: 1 + Math.random() * 3,
-                    length: 10 + Math.random() * 20,
-                    char: String.fromCharCode(0x30A0 + Math.random() * 96)
-                });
-            }
-        }
-        initRain();
-
-        function drawRain() {
-            ctx.fillStyle = 'rgba(10,10,15,0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.font = '14px monospace';
-            rainDrops.forEach(d => {
-                d.y += d.speed;
-                if (d.y > canvas.height) { d.y = -20; d.x = Math.random() * canvas.width; d.char = String.fromCharCode(0x30A0 + Math.random() * 96); }
-                const bright = 0.3 + (d.y / canvas.height) * 0.5;
-                ctx.fillStyle = `rgba(0,255,255,${bright * 0.5})`;
-                ctx.fillText(d.char, d.x, d.y);
-                for (let i = 1; i < d.length; i++) {
-                    ctx.fillStyle = `rgba(0,255,255,${(1 - i / d.length) * 0.15})`;
-                    ctx.fillText(d.char, d.x, d.y - i * 16);
-                }
-            });
-            requestAnimationFrame(drawRain);
-        }
-        drawRain();
-
-        // ================================================================
-        //  粒子特效
-        // ================================================================
-        function spawnParticles(count, color = '#00ffff', cx, cy) {
-            const container = document.getElementById('particleContainer');
-            if (!cx || !cy) { cx = window.innerWidth / 2; cy = window.innerHeight / 2; }
+        function generateLightning() {
+            const container = document.getElementById('lightningContainer');
+            container.innerHTML = '';
+            const count = 18 + Math.floor(Math.random() * 12);
             for (let i = 0; i < count; i++) {
-                const p = document.createElement('div');
-                p.className = 'float-particle';
+                const bolt = document.createElement('div');
+                bolt.className = 'lightning';
                 const angle = Math.random() * Math.PI * 2;
-                const dist = 80 + Math.random() * 250;
-                p.style.setProperty('--fx', Math.cos(angle) * dist + 'px');
-                p.style.setProperty('--fy', Math.sin(angle) * dist + 'px');
-                p.style.left = cx + 'px';
-                p.style.top = cy + 'px';
-                p.style.background = color;
-                p.style.boxShadow = `0 0 15px ${color}`;
-                p.style.animationDuration = (1 + Math.random()) + 's';
-                container.appendChild(p);
-                setTimeout(() => p.remove(), 2000);
+                const radius = 60 + Math.random() * 40;
+                const x = 50 + Math.cos(angle) * radius * 0.4;
+                const y = 50 + Math.sin(angle) * radius * 0.4;
+                const len = 20 + Math.random() * 50;
+                const rot = Math.atan2(Math.sin(angle) * radius * 0.4, Math.cos(angle) * radius * 0.4) * (180 / Math.PI);
+                bolt.style.left = x + '%';
+                bolt.style.top = y + '%';
+                bolt.style.height = len + 'px';
+                bolt.style.transform = `translate(-50%, -100%) rotate(${rot + 90}deg)`;
+                bolt.style.animationDelay = (Math.random() * 0.8) + 's';
+                bolt.style.animationDuration = (0.2 + Math.random() * 0.4) + 's';
+                bolt.style.width = (1 + Math.random() * 3) + 'px';
+                bolt.style.opacity = 0.3 + Math.random() * 0.5;
+                container.appendChild(bolt);
+            }
+        }
+
+        function startLightning() {
+            if (lightningInterval) clearInterval(lightningInterval);
+            generateLightning();
+            lightningInterval = setInterval(generateLightning, 1500);
+        }
+
+        function stopLightning() {
+            if (lightningInterval) {
+                clearInterval(lightningInterval);
+                lightningInterval = null;
             }
         }
 
         // ================================================================
-        //  燃烧逻辑
+        //  能量消耗动画
         // ================================================================
         let burnInterval = null;
         let isBurning = false;
         let burnMode = null;
-        const sphere = document.getElementById('energySphere');
-        const burnDisplay = document.getElementById('burnEnergyDisplay');
-        const burnStatus = document.getElementById('burnStatus');
 
-        function updateBurnDisplay() {
-            const userData = getCurrentUserData();
-            if (userData) {
-                burnDisplay.textContent = userData.energy || 0;
-                const intensity = Math.min(1, (userData.energy || 0) / 500);
-                sphere.style.boxShadow = `0 0 ${40 + intensity * 60}px rgba(0,255,255,${0.3 + intensity * 0.5})`;
-                sphere.style.background = `radial-gradient(circle at 30% 30%, 
-                    rgba(0,255,255,${0.3 + intensity * 0.7}), 
-                    rgba(0,100,255,${0.2 + intensity * 0.5}), 
-                    rgba(68,0,170,${0.2 + intensity * 0.3}))`;
-            }
-        }
-
-        function doBurn(amount) {
+        function startEnergyBurn() {
             const userData = getCurrentUserData();
             if (!userData || (userData.energy || 0) <= 0) {
-                stopBurn();
-                burnStatus.textContent = '⚡ 能量已耗尽！';
+                alert('⚡ 能量不足，请先兑换能量！');
                 return;
             }
-            const consumed = Math.min(amount, userData.energy);
-            userData.energy -= consumed;
-            userData.totalBurned = (userData.totalBurned || 0) + consumed;
-            if (!userData.history) userData.history = [];
-            userData.history.push({
-                type: '燃烧',
-                detail: burnMode === 'slow' ? '匀速慢燃' : '极速爆燃',
-                amount: '-' + consumed,
-                time: new Date().toLocaleString()
-            });
-            saveCurrentUserData(userData);
-            updateBurnDisplay();
-            updateHomePage();
-            spawnParticles(burnMode === 'slow' ? 5 : 20, burnMode === 'slow' ? '#00ffff' : '#ff4400');
-            if (userData.energy <= 0) { stopBurn(); burnStatus.textContent = '💀 能量归零！'; }
-        }
 
-        function startBurn(mode) {
-            if (isBurning) stopBurn();
-            const userData = getCurrentUserData();
-            if (!userData || (userData.energy || 0) <= 0) {
-                burnStatus.textContent = '⚡ 能量为0，无法燃烧';
+            if (isBurning) {
+                stopEnergyBurn();
                 return;
             }
+
+            const globe = document.getElementById('mainGlobe');
+            const energyDisplay = document.getElementById('energyDisplay');
+
             isBurning = true;
-            burnMode = mode;
-            if (mode === 'slow') {
-                burnStatus.textContent = '🐢 匀速慢燃中 ...';
-                burnInterval = setInterval(() => doBurn(2 + Math.random() * 3), 300);
-            } else if (mode === 'fast') {
-                burnStatus.textContent = '💥 极速爆燃 !!!';
-                const total = userData.energy || 0;
-                const flash = document.createElement('div');
-                flash.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at center,rgba(255,255,255,0.9),rgba(255,0,255,0.6),transparent);z-index:50;pointer-events:none;animation:flashOut 0.6s forwards;';
-                document.body.appendChild(flash);
-                setTimeout(() => flash.remove(), 700);
-                if (!document.getElementById('flashStyle')) {
-                    const style = document.createElement('style');
-                    style.id = 'flashStyle';
-                    style.textContent = `@keyframes flashOut { 0%{opacity:1;transform:scale(0.5)} 50%{opacity:1;transform:scale(1.5)} 100%{opacity:0;transform:scale(2)} }`;
-                    document.head.appendChild(style);
+            globe.classList.add('speed-up');
+            energyDisplay.classList.add('burning');
+
+            burnInterval = setInterval(() => {
+                const data = getCurrentUserData();
+                if (!data || data.energy <= 0) {
+                    stopEnergyBurn();
+                    alert('💀 能量已耗尽！');
+                    return;
                 }
-                doBurn(total);
-                setTimeout(() => stopBurn(), 500);
+                const consume = 1 + Math.floor(Math.random() * 3);
+                data.energy = Math.max(0, data.energy - consume);
+                data.totalBurned = (data.totalBurned || 0) + consume;
+                if (!data.history) data.history = [];
+                data.history.push({
+                    type: '燃烧',
+                    detail: '能量消耗',
+                    amount: '-' + consume,
+                    time: new Date().toLocaleString()
+                });
+                saveCurrentUserData(data);
+                updateEnergyDisplay();
+                updateProfileStats();
+                // 如果能量归零，停止
+                if (data.energy <= 0) {
+                    stopEnergyBurn();
+                    alert('💀 能量已耗尽！');
+                }
+            }, 300);
+        }
+
+        function stopEnergyBurn() {
+            if (burnInterval) {
+                clearInterval(burnInterval);
+                burnInterval = null;
+            }
+            isBurning = false;
+            const globe = document.getElementById('mainGlobe');
+            const energyDisplay = document.getElementById('energyDisplay');
+            globe.classList.remove('speed-up');
+            energyDisplay.classList.remove('burning');
+        }
+
+        // ================================================================
+        //  更新UI
+        // ================================================================
+        function updateEnergyDisplay() {
+            const userData = getCurrentUserData();
+            const display = document.getElementById('energyDisplay');
+            if (userData) {
+                display.textContent = userData.energy || 0;
+            } else {
+                display.textContent = '0';
             }
         }
 
-        function stopBurn() {
-            if (burnInterval) { clearInterval(burnInterval); burnInterval = null; }
-            isBurning = false;
-            burnStatus.textContent = '⏹ 已停止';
-            updateBurnDisplay();
+        function updateProfileStats() {
+            const userData = getCurrentUserData();
+            const phone = getCurrentUser();
+            if (userData) {
+                document.getElementById('profileEnergy').textContent = userData.energy || 0;
+                document.getElementById('profileEarned').textContent = userData.totalEarned || 0;
+                document.getElementById('profileBurned').textContent = userData.totalBurned || 0;
+                document.getElementById('profileName').textContent = userData.nickname || generateNickname();
+                document.getElementById('profilePhone').textContent = '📱 ' + (phone || '未绑定');
+                const level = Math.floor((userData.energy || 0) / 100) + 1;
+                document.getElementById('profileLevel').textContent = '🌱 Lv.' + level;
+                // 勋章
+                const badges = userData.badges || ['🌱 觉醒者'];
+                if ((userData.totalEarned || 0) >= 100 && !badges.includes('💎 百能量师')) badges.push('💎 百能量师');
+                if ((userData.totalBurned || 0) >= 100 && !badges.includes('🔥 燃境大师')) badges.push('🔥 燃境大师');
+                if ((userData.totalEarned || 0) >= 500 && !badges.includes('👑 能量领主')) badges.push('👑 能量领主');
+                userData.badges = badges;
+                saveCurrentUserData(userData);
+                document.getElementById('badgeList').innerHTML = badges.map(b => `<span class="badge-item">${b}</span>`).join(
+                '');
+            } else {
+                document.getElementById('profileEnergy').textContent = '0';
+                document.getElementById('profileEarned').textContent = '0';
+                document.getElementById('profileBurned').textContent = '0';
+                document.getElementById('profileName').textContent = '游客';
+                document.getElementById('profilePhone').textContent = '未登录';
+                document.getElementById('profileLevel').textContent = '🌱 Lv.0';
+                document.getElementById('badgeList').innerHTML = '<span class="badge-item">👤 游客</span>';
+            }
         }
 
-        // ================================================================
-        //  历史日志
-        // ================================================================
-        function renderHistory() {
+        function renderLogs() {
             const userData = getCurrentUserData();
-            const container = document.getElementById('historyList');
+            const container = document.getElementById('logList');
             if (!userData || !userData.history || userData.history.length === 0) {
                 container.innerHTML = '<div style="text-align:center;opacity:0.4;padding:30px 0;">暂无记录</div>';
                 return;
@@ -1216,41 +1374,13 @@
             `).join('');
         }
 
-        // ================================================================
-        //  个人中心
-        // ================================================================
-        function renderProfile() {
-            const userData = getCurrentUserData();
-            const phone = getCurrentUser();
-            if (!userData) return;
-            document.getElementById('profilePhone').textContent = '📱 ' + (phone || '未绑定');
-            document.getElementById('profileEnergy').textContent = userData.energy || 0;
-            document.getElementById('profileEarned').textContent = userData.totalEarned || 0;
-            document.getElementById('profileBurned').textContent = userData.totalBurned || 0;
-            const level = Math.floor((userData.energy || 0) / 100) + 1;
-            document.getElementById('profileLevel').textContent = '🌱 Lv.' + level;
-            document.getElementById('profileName').textContent = userData.nickname || generateNickname();
-            if (!userData.nickname) { userData.nickname = generateNickname(); saveCurrentUserData(userData); }
-            const badges = userData.badges || ['🌱 觉醒者'];
-            if ((userData.totalEarned || 0) >= 100 && !badges.includes('💎 百能量师')) badges.push('💎 百能量师');
-            if ((userData.totalBurned || 0) >= 100 && !badges.includes('🔥 燃境大师')) badges.push('🔥 燃境大师');
-            if ((userData.totalEarned || 0) >= 500 && !badges.includes('👑 能量领主')) badges.push('👑 能量领主');
-            userData.badges = badges;
-            saveCurrentUserData(userData);
-            document.getElementById('badgeList').innerHTML = badges.map(b => `<span class="badge-item">${b}</span>`).join('');
-        }
-
-        // ================================================================
-        //  排行榜
-        // ================================================================
         function renderRank() {
             const users = getUsers();
             const container = document.getElementById('rankList');
             const list = Object.keys(users).map(phone => ({
                 phone: phone,
                 name: users[phone].nickname || phone.substring(0, 6) + '***',
-                burned: users[phone].totalBurned || 0,
-                energy: users[phone].energy || 0
+                burned: users[phone].totalBurned || 0
             })).sort((a, b) => b.burned - a.burned);
             if (list.length === 0) {
                 container.innerHTML = '<div style="text-align:center;opacity:0.4;padding:30px 0;">暂无数据</div>';
@@ -1265,24 +1395,28 @@
             `).join('');
         }
 
-        // ================================================================
-        //  任务中心
-        // ================================================================
-        function checkDailyTask() {
+        function updateDailyTask() {
             const userData = getCurrentUserData();
-            if (!userData) return;
+            if (!userData) {
+                document.getElementById('dailyTaskBtn').disabled = true;
+                document.getElementById('dailyTaskBtn').style.opacity = '0.4';
+                document.getElementById('dailyTaskStatus').textContent = '请先登录';
+                return;
+            }
             const last = userData.lastDaily || 0;
             const now = Date.now();
             const canClaim = now - last > 24 * 60 * 60 * 1000;
             const btn = document.getElementById('dailyTaskBtn');
             const status = document.getElementById('dailyTaskStatus');
             if (canClaim) {
-                btn.disabled = false; btn.style.opacity = '1';
+                btn.disabled = false;
+                btn.style.opacity = '1';
                 btn.textContent = '🎁 领取奖励';
                 status.textContent = '✅ 今日可领取';
                 status.style.color = '#66ffaa';
             } else {
-                btn.disabled = true; btn.style.opacity = '0.5';
+                btn.disabled = true;
+                btn.style.opacity = '0.4';
                 const remain = 24 * 60 * 60 * 1000 - (now - last);
                 const hours = Math.floor(remain / (60 * 60 * 1000));
                 const mins = Math.floor((remain % (60 * 60 * 1000)) / (60 * 1000));
@@ -1292,192 +1426,368 @@
             }
         }
 
-        function claimDaily() {
-            const userData = getCurrentUserData();
-            if (!userData) { alert('请先登录'); return; }
-            const last = userData.lastDaily || 0;
-            if (Date.now() - last < 24 * 60 * 60 * 1000) {
-                alert('⏳ 今日已领取，请明天再来');
-                return;
+        // ================================================================
+        //  登录弹窗逻辑
+        // ================================================================
+        function showLoginModal(tab = 'login') {
+            const modal = document.getElementById('loginModal');
+            modal.classList.add('show');
+            // 切换到对应tab
+            document.querySelectorAll('#loginModal .tab-btn').forEach(b => b.classList.remove('active'));
+            if (tab === 'login') {
+                document.querySelector('#loginModal .tab-btn[data-tab="login"]').classList.add('active');
+                document.getElementById('modalLoginForm').style.display = 'block';
+                document.getElementById('modalRegisterForm').style.display = 'none';
+            } else {
+                document.querySelector('#loginModal .tab-btn[data-tab="register"]').classList.add('active');
+                document.getElementById('modalLoginForm').style.display = 'none';
+                document.getElementById('modalRegisterForm').style.display = 'block';
             }
-            userData.energy = (userData.energy || 0) + 20;
-            userData.totalEarned = (userData.totalEarned || 0) + 20;
-            userData.lastDaily = Date.now();
-            if (!userData.history) userData.history = [];
-            userData.history.push({ type: '任务', detail: '每日登录奖励', amount: '+20', time: new Date().toLocaleString() });
-            saveCurrentUserData(userData);
-            updateHomePage();
-            checkDailyTask();
-            spawnParticles(30, '#ffaa00', window.innerWidth / 2, window.innerHeight / 2);
-            alert('✅ 领取成功！获得 20 能量');
+            document.getElementById('modalLoginMsg').textContent = '';
+            document.getElementById('modalRegMsg').textContent = '';
+        }
+
+        function hideLoginModal() {
+            document.getElementById('loginModal').classList.remove('show');
+        }
+
+        function setupModalAuth() {
+            // Tab切换
+            document.querySelectorAll('#loginModal .tab-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('#loginModal .tab-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    if (this.dataset.tab === 'login') {
+                        document.getElementById('modalLoginForm').style.display = 'block';
+                        document.getElementById('modalRegisterForm').style.display = 'none';
+                    } else {
+                        document.getElementById('modalLoginForm').style.display = 'none';
+                        document.getElementById('modalRegisterForm').style.display = 'block';
+                    }
+                    document.getElementById('modalLoginMsg').textContent = '';
+                    document.getElementById('modalRegMsg').textContent = '';
+                });
+            });
+
+            // 注册
+            document.getElementById('modalRegisterBtn').addEventListener('click', function() {
+                const phone = document.getElementById('modalRegPhone').value.trim();
+                const pwd = document.getElementById('modalRegPassword').value.trim();
+                const confirm = document.getElementById('modalRegConfirm').value.trim();
+                const msg = document.getElementById('modalRegMsg');
+                if (!phone || !pwd || !confirm) { msg.textContent = '⚠️ 请填写完整'; return; }
+                if (pwd.length < 6) { msg.textContent = '⚠️ 密码至少6位'; return; }
+                if (pwd !== confirm) { msg.textContent = '⚠️ 密码不一致'; return; }
+                const users = getUsers();
+                if (users[phone]) { msg.textContent = '❌ 手机号已注册'; return; }
+                users[phone] = {
+                    password: pwd,
+                    energy: 0,
+                    totalEarned: 0,
+                    totalBurned: 0,
+                    history: [],
+                    nickname: generateNickname(),
+                    badges: ['🌱 觉醒者'],
+                    lastDaily: 0
+                };
+                saveUsers(users);
+                msg.textContent = '✅ 注册成功！请登录';
+                msg.className = 'form-msg success';
+                document.getElementById('modalRegPhone').value = '';
+                document.getElementById('modalRegPassword').value = '';
+                document.getElementById('modalRegConfirm').value = '';
+                // 切换到登录
+                document.querySelector('#loginModal .tab-btn[data-tab="login"]').click();
+            });
+
+            // 登录
+            document.getElementById('modalLoginBtn').addEventListener('click', function() {
+                const phone = document.getElementById('modalLoginPhone').value.trim();
+                const pwd = document.getElementById('modalLoginPassword').value.trim();
+                const msg = document.getElementById('modalLoginMsg');
+                if (!phone || !pwd) { msg.textContent = '⚠️ 请输入完整'; return; }
+                const users = getUsers();
+                if (!users[phone]) { msg.textContent = '❌ 账号不存在'; return; }
+                if (users[phone].password !== pwd) { msg.textContent = '❌ 密码错误'; return; }
+                setCurrentUser(phone);
+                msg.textContent = '✅ 登录成功！';
+                msg.className = 'form-msg success';
+                setTimeout(() => {
+                    hideLoginModal();
+                    refreshAllUI();
+                    document.getElementById('modalLoginPhone').value = '';
+                    document.getElementById('modalLoginPassword').value = '';
+                    msg.textContent = '';
+                }, 600);
+            });
+
+            // 忘记密码
+            document.getElementById('modalForgotPwd').addEventListener('click', function() {
+                const phone = prompt('📱 输入手机号，密码将重置为 123456');
+                if (!phone) return;
+                const users = getUsers();
+                if (!users[phone]) { alert('❌ 未注册'); return; }
+                users[phone].password = '123456';
+                saveUsers(users);
+                alert('✅ 密码已重置为 123456');
+            });
+
+            // 游客
+            document.getElementById('modalGuestEnter').addEventListener('click', function() {
+                setCurrentUser('guest_' + Date.now());
+                hideLoginModal();
+                refreshAllUI();
+                alert('🧊 游客模式，数据不会保存');
+            });
+
+            // 关闭
+            document.getElementById('modalCloseBtn').addEventListener('click', hideLoginModal);
+            document.getElementById('loginModal').addEventListener('click', function(e) {
+                if (e.target === this) hideLoginModal();
+            });
+
+            // 回车登录/注册
+            document.querySelectorAll('#loginModal input').forEach(input => {
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        if (document.getElementById('modalLoginForm').style.display !== 'none') {
+                            document.getElementById('modalLoginBtn').click();
+                        } else {
+                            document.getElementById('modalRegisterBtn').click();
+                        }
+                    }
+                });
+            });
         }
 
         // ================================================================
-        //  设置
+        //  刷新所有UI
         // ================================================================
-        function setupSettings() {
-            document.querySelectorAll('.toggle').forEach(toggle => {
-                toggle.addEventListener('click', function() {
-                    this.classList.toggle('active');
+        function refreshAllUI() {
+            updateEnergyDisplay();
+            updateProfileStats();
+            renderLogs();
+            renderRank();
+            updateDailyTask();
+        }
+
+        // ================================================================
+        //  导航切换
+        // ================================================================
+        function setupNavigation() {
+            const navItems = document.querySelectorAll('.nav-item');
+            const pages = {
+                pageHome: document.getElementById('pageHome'),
+                pageTasks: document.getElementById('pageTasks'),
+                pageRank: document.getElementById('pageRank'),
+                pageLog: document.getElementById('pageLog'),
+                pageProfile: document.getElementById('pageProfile')
+            };
+
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // 如果正在燃烧，停止
+                    if (isBurning) stopEnergyBurn();
+
+                    // 切换导航高亮
+                    navItems.forEach(n => n.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // 切换页面
+                    const pageId = this.dataset.page;
+                    Object.keys(pages).forEach(key => {
+                        pages[key].classList.toggle('active', key === pageId);
+                    });
+
+                    // 刷新对应页面数据
+                    if (pageId === 'pageLog') renderLogs();
+                    if (pageId === 'pageRank') renderRank();
+                    if (pageId === 'pageProfile') updateProfileStats();
+                    if (pageId === 'pageTasks') updateDailyTask();
                 });
             });
-            document.getElementById('settingsLogoutBtn').addEventListener('click', function() {
-                if (confirm('确定退出登录吗？')) {
-                    setCurrentUser(null);
-                    location.reload();
+        }
+
+        // ================================================================
+        //  核心交互：开始按钮
+        // ================================================================
+        function setupStartButton() {
+            document.getElementById('btnStart').addEventListener('click', function() {
+                const code = document.getElementById('codeInput').value.trim().toLowerCase();
+                const userData = getCurrentUserData();
+
+                // 检查是否登录（游客也算未登录）
+                const phone = getCurrentUser();
+                const isLoggedIn = phone && !phone.startsWith('guest_');
+
+                // 如果未登录，弹出登录弹窗
+                if (!isLoggedIn) {
+                    showLoginModal('login');
+                    return;
+                }
+
+                // 已登录：处理代码
+                if (!code) {
+                    // 没有输入代码，直接触发燃烧
+                    startEnergyBurn();
+                    return;
+                }
+
+                // 有代码：尝试兑换
+                if (CODE_MAP.hasOwnProperty(code)) {
+                    const gain = CODE_MAP[code];
+                    userData.energy = (userData.energy || 0) + gain;
+                    userData.totalEarned = (userData.totalEarned || 0) + gain;
+                    if (!userData.history) userData.history = [];
+                    userData.history.push({
+                        type: '兑换',
+                        detail: '密钥 ' + code,
+                        amount: '+' + gain,
+                        time: new Date().toLocaleString()
+                    });
+                    saveCurrentUserData(userData);
+                    refreshAllUI();
+                    document.getElementById('codeInput').value = '';
+                    alert('✅ 兑换成功！获得 ' + gain + ' 能量');
+                } else {
+                    // 无效代码，但已登录，触发燃烧
+                    startEnergyBurn();
+                }
+            });
+
+            // 回车触发
+            document.getElementById('codeInput').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    document.getElementById('btnStart').click();
                 }
             });
         }
 
         // ================================================================
-        //  密钥解析
+        //  任务按钮
         // ================================================================
-        function handleCodeSubmit() {
-            const input = document.getElementById('codeInput');
-            const msg = document.getElementById('codeMsg');
-            const code = input.value.trim().toLowerCase();
-            const userData = getCurrentUserData();
-            if (!userData) { msg.textContent = '⚠️ 请先登录'; msg.className = 'cyber-msg error'; return; }
-            if (!code) { msg.textContent = '⚠️ 请输入密钥'; msg.className = 'cyber-msg error'; return; }
-            if (CODE_MAP.hasOwnProperty(code)) {
-                const gain = CODE_MAP[code];
-                userData.energy = (userData.energy || 0) + gain;
-                userData.totalEarned = (userData.totalEarned || 0) + gain;
+        function setupTasks() {
+            // 每日任务
+            document.getElementById('dailyTaskBtn').addEventListener('click', function() {
+                const userData = getCurrentUserData();
+                if (!userData) { alert('请先登录'); showLoginModal('login'); return; }
+                const last = userData.lastDaily || 0;
+                if (Date.now() - last < 24 * 60 * 60 * 1000) {
+                    alert('⏳ 今日已领取，请明天再来');
+                    return;
+                }
+                userData.energy = (userData.energy || 0) + 20;
+                userData.totalEarned = (userData.totalEarned || 0) + 20;
+                userData.lastDaily = Date.now();
                 if (!userData.history) userData.history = [];
-                userData.history.push({ type: '兑换', detail: '密钥 ' + code, amount: '+' + gain, time: new Date().toLocaleString() });
+                userData.history.push({ type: '任务', detail: '每日登录奖励', amount: '+20', time: new Date().toLocaleString() });
                 saveCurrentUserData(userData);
-                msg.textContent = '✅ 获得 ' + gain + ' 能量！';
-                msg.className = 'cyber-msg success';
-                spawnParticles(30, '#00ffff', window.innerWidth / 2, window.innerHeight / 2);
-                input.value = '';
-                updateHomePage();
-            } else {
-                msg.textContent = '❌ 数据流解析失败，密钥无效';
-                msg.className = 'cyber-msg error';
-                input.classList.add('input-error');
-                setTimeout(() => input.classList.remove('input-error'), 600);
-            }
+                refreshAllUI();
+                alert('✅ 领取成功！获得 20 能量');
+            });
+
+            // 限时代码
+            document.getElementById('limitedCodeBtn').addEventListener('click', function() {
+                const userData = getCurrentUserData();
+                if (!userData) { alert('请先登录'); showLoginModal('login'); return; }
+                if (userData.usedLimitedCode) {
+                    alert('⏳ 限时代码已使用过');
+                    return;
+                }
+                userData.energy = (userData.energy || 0) + 50;
+                userData.totalEarned = (userData.totalEarned || 0) + 50;
+                userData.usedLimitedCode = true;
+                if (!userData.history) userData.history = [];
+                userData.history.push({ type: '兑换', detail: '限时代码 koil2026', amount: '+50', time: new Date()
+                        .toLocaleString() });
+                saveCurrentUserData(userData);
+                refreshAllUI();
+                alert('✅ 兑换成功！获得 50 能量');
+            });
+        }
+
+        // ================================================================
+        //  个人中心按钮
+        // ================================================================
+        function setupProfileButtons() {
+            document.getElementById('profileLoginBtn').addEventListener('click', function() {
+                showLoginModal('login');
+            });
+            document.getElementById('profileRegisterBtn').addEventListener('click', function() {
+                showLoginModal('register');
+            });
+            document.getElementById('profileLogoutBtn').addEventListener('click', function() {
+                if (confirm('确定退出登录吗？')) {
+                    setCurrentUser(null);
+                    refreshAllUI();
+                    alert('已退出登录');
+                }
+            });
+
+            // 清空日志
+            document.getElementById('clearLogBtn').addEventListener('click', function() {
+                const userData = getCurrentUserData();
+                if (!userData) { alert('请先登录'); return; }
+                if (confirm('确定清空所有日志吗？')) {
+                    userData.history = [];
+                    saveCurrentUserData(userData);
+                    renderLogs();
+                }
+            });
+
+            // 设置开关（简单演示）
+            document.getElementById('toggleSound').addEventListener('click', function() {
+                this.classList.toggle('active');
+                alert('🔊 音效已' + (this.classList.contains('active') ? '开启' : '关闭'));
+            });
+            document.getElementById('toggleTheme').addEventListener('click', function() {
+                this.classList.toggle('active');
+                alert('🎨 主题切换（演示功能）');
+            });
         }
 
         // ================================================================
         //  初始化
         // ================================================================
         function initApp() {
-            // 显示闪屏
-            showSplash();
+            // 启动闪电
+            startLightning();
 
-            // 等闪屏结束后再绑定事件（实际上闪屏结束后会调用 showLoginPage）
-            // 但我们需要提前绑定好所有按钮，等闪屏结束后页面才能交互
-            setTimeout(() => {
-                // 首页按钮
-                document.getElementById('goToCode').addEventListener('click', () => {
-                    const data = getCurrentUserData();
-                    if (!data) { alert('请先登录'); showPage('pageLogin'); return; }
-                    showPage('pageCode');
-                    document.getElementById('codeInput').focus();
-                });
+            // 初始化UI
+            refreshAllUI();
 
-                document.getElementById('goToBurn').addEventListener('click', () => {
-                    const data = getCurrentUserData();
-                    if (!data) { alert('请先登录'); showPage('pageLogin'); return; }
-                    showPage('pageBurn');
-                    updateBurnDisplay();
-                    burnStatus.textContent = '⚡ 准备燃烧';
-                });
+            // 设置导航
+            setupNavigation();
 
-                document.getElementById('goToHistory').addEventListener('click', () => {
-                    const data = getCurrentUserData();
-                    if (!data) { alert('请先登录'); showPage('pageLogin'); return; }
-                    showPage('pageHistory');
-                    renderHistory();
-                });
+            // 设置开始按钮
+            setupStartButton();
 
-                document.getElementById('goToProfile').addEventListener('click', () => {
-                    const data = getCurrentUserData();
-                    if (!data) { alert('请先登录'); showPage('pageLogin'); return; }
-                    showPage('pageProfile');
-                    renderProfile();
-                });
+            // 设置任务
+            setupTasks();
 
-                document.getElementById('goToTasks').addEventListener('click', () => {
-                    const data = getCurrentUserData();
-                    if (!data) { alert('请先登录'); showPage('pageLogin'); return; }
-                    showPage('pageTasks');
-                    checkDailyTask();
-                });
+            // 设置个人中心
+            setupProfileButtons();
 
-                document.getElementById('goToRank').addEventListener('click', () => {
-                    showPage('pageRank');
-                    renderRank();
-                });
+            // 设置登录弹窗
+            setupModalAuth();
 
-                document.getElementById('goToSettings').addEventListener('click', () => {
-                    const data = getCurrentUserData();
-                    if (!data) { alert('请先登录'); showPage('pageLogin'); return; }
-                    showPage('pageSettings');
-                });
+            // 如果已登录，更新所有UI
+            if (getCurrentUser()) {
+                refreshAllUI();
+            }
 
-                document.getElementById('logoutBtn').addEventListener('click', function() {
-                    if (confirm('退出登录？')) { setCurrentUser(null); location.reload(); }
-                });
-
-                // 返回按钮
-                const backMap = {
-                    'backHomeFromCode': 'pageHome',
-                    'backHomeFromBurn': 'pageHome',
-                    'backHomeFromHistory': 'pageHome',
-                    'backHomeFromProfile': 'pageHome',
-                    'backHomeFromTasks': 'pageHome',
-                    'backHomeFromRank': 'pageHome',
-                    'backHomeFromSettings': 'pageHome'
-                };
-                Object.keys(backMap).forEach(id => {
-                    document.getElementById(id).addEventListener('click', function() {
-                        if (isBurning) stopBurn();
-                        showPage(backMap[id]);
-                        updateHomePage();
-                    });
-                });
-
-                // 密钥
-                document.getElementById('submitCodeBtn').addEventListener('click', handleCodeSubmit);
-                document.getElementById('codeInput').addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter') handleCodeSubmit();
-                });
-
-                // 燃烧
-                document.getElementById('burnSlowBtn').addEventListener('click', () => startBurn('slow'));
-                document.getElementById('burnFastBtn').addEventListener('click', () => startBurn('fast'));
-                document.getElementById('burnStopBtn').addEventListener('click', stopBurn);
-
-                // 日志清空
-                document.getElementById('clearHistoryBtn').addEventListener('click', function() {
-                    if (confirm('确定清空所有日志吗？')) {
-                        const userData = getCurrentUserData();
-                        if (userData) { userData.history = []; saveCurrentUserData(userData); renderHistory(); }
-                    }
-                });
-
-                // 任务
-                document.getElementById('dailyTaskBtn').addEventListener('click', claimDaily);
-
-                // 设置
-                setupSettings();
-
-                // 反馈入口
-                document.getElementById('feedbackBtn').addEventListener('click', function() {
-                    alert('📨 反馈渠道\n\n你可以通过以下方式反馈：\n1. 评论区留言\n2. 联系开发者\n\n感谢你的使用！');
-                });
-
-                // 登录注册
-                setupAuth();
-
-                console.log('✅ Koil 加载完成！');
-                console.log('💡 所有功能已就绪，享受你的赛博之旅！');
-            }, 100);
+            console.log('✅ Koil · 铸钥 加载完成！');
+            console.log('💡 输入密钥兑换能量，点击【开始】消耗能量');
+            console.log('💡 未登录时点击【开始】会弹出登录弹窗');
         }
 
-        document.addEventListener('DOMContentLoaded', initApp);
+        // ================================================================
+        //  页面加载入口
+        // ================================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            // 先显示闪屏
+            showSplash();
+        });
     </script>
 </body>
 </html>
